@@ -1,22 +1,73 @@
 # TFTK (TensorFlow Toolkit)
 
-## What is TFTK ?
+## 1. What is TFTK ?
 
 TFTKはTensorFlowを簡単化するライブラリです。
+学習するにあたって、あのモデルを使いたい、あのデータ拡張を使いたい、あの何かをつかいたいを簡単にします。
 
 * データセットの取得を簡単にします。
 * データセットの操作を簡単にします。
-* モデルも多数組み合わせられます。
-　単純なCNNモデルから、ResNetまで。
+* データの拡張を簡単にします。
+* モデルも多数組み合わせられます。単純なCNNモデルから、ResNetまで。
+
+
+## 2.サポートされているパーツ
+
+__データセット操作__
+
+
+
+__データ拡張__
+
+|データ化拡張|説明|リンク|
+|:--|:--|:--|
+|Mixup| | |
+|Cutout| | |
+|RandAugment|| |
+
+__モデル__
+
+|モデル| | |
+|:--|:--|:--|
+|サンプルCNN| | |
+|ResNet50| | |
+|ResNet152| | |
+|MobileNet| | |
+|MobileNetV2| | |
+
+__距離学習__
+
+| | | |
+|:--|:--|:--|
+| | | |
+
+__最適化__
+
+| | | |
+|:--|:--|:--|
+|Mish| | |
+|relu| | |
+
+__CAM__
+
+
+
+
+## サンプル
 
 __サンプル　mnistの学習__
+
+https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py
+
+に比較して、半分以下の労力で記述できます。
+
 ```
 from tfkit.dataset.image.classification import Mnist
+from tfkit.dataset.image.utility import ImageDatasetUtil
 from tfkit.model.image.base import SimpleBaseModel
 from tfkit.model.classify import SoftmaxClassifyModel
-from tfkit.dataset.image.utility import ImageDatasetUtil
-from tfkit.train.image import ImageTrain
 from tfkit.train.callbacks import HandyCallback
+from tfkit.train.image import ImageTrain
 
 dataset, len = Mnist.get_train_dataset()
 dataset = dataset.map(ImageDatasetUtil.dataset_init_classification(10))
