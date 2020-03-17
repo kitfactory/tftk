@@ -9,14 +9,14 @@ def read_requirements():
     return requirements
 
 setup(
-    name='tfkit',
+    name='tftk',
     version='0.0.1',
     description='TensorFlow simple utility',
     long_description='READEME.md',
     author='Naruhide KITADA',
     author_email='kitfactory@gmail.com',
     install_requires=read_requirements(),
-    url='https://github.com/kitfactory/tfkit',
+    url='https://github.com/kitfactory/tftk',
     license='LICENSE',
     packages=find_packages(exclude=('tests', 'docs'))
 )

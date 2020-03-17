@@ -1,5 +1,5 @@
 import unittest
-from tfkit import tfkit
+from tftk import tftk
 
 class TestSample(unittest.TestCase):
     """test class of tashizan.py

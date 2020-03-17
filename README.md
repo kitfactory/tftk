@@ -62,12 +62,12 @@ https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py
 に比較して、半分以下の労力で記述できます。
 
 ```
-from tfkit.dataset.image.classification import Mnist
-from tfkit.dataset.image.utility import ImageDatasetUtil
-from tfkit.model.image.base import SimpleBaseModel
-from tfkit.model.classify import SoftmaxClassifyModel
-from tfkit.train.callbacks import HandyCallback
-from tfkit.train.image import ImageTrain
+from tftk.dataset.image.classification import Mnist
+from tftk.dataset.image.utility import ImageDatasetUtil
+from tftk.model.image.base import SimpleBaseModel
+from tftk.model.classify import SoftmaxClassifyModel
+from tftk.train.callbacks import HandyCallback
+from tftk.train.image import ImageTrain
 
 dataset, len = Mnist.get_train_dataset()
 dataset = dataset.map(ImageDatasetUtil.dataset_init_classification(10))

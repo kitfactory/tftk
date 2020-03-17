@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from tfkit.dataset.base import BaseDataset
+from tftk.dataset.base import BaseDataset
 
 class Mnist(BaseDataset):
     @classmethod
@@ -25,7 +25,7 @@ class Cifar10(BaseDataset):
     @classmethod
     def get_test_dataset(cls)->(tf.data.Dataset, int):
         ds, info = tfds.load(name="cifar10", split="test",with_info=True)
-        return ds, info.splits["test"].num_examples 
+        return ds, info.splits["test"].num_examples
 
 
 class ImageLabelFolderDataset():
@@ -56,3 +56,28 @@ class ImageLabelFolderDataset():
         ds = builder.as_dataset(split='test', shuffle_files=False)
         len = builder.info.splits['test'].num_examples  # Splits, num examples,... automatically extracted
         return ds, len
+
+
+
+
+class ImageNet(BaseDataset):
+    """ImageNetリサイズ画像
+    
+    Arguments:   
+        BaseDataset {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    @classmethod
+    def get_train_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="imagenet_resized/64x64", split="train",with_info=True)
+        return ds, info.splits["train"].num_examples
+
+    @classmethod
+    def get_test_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="imagenet_resized/64x64", split="test",with_info=True)
+        return ds, info.splits["test"].num_examples
+
+
+

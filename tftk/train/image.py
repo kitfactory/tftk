@@ -1,7 +1,7 @@
 from typing import List
 import tensorflow as tf
 
-from tfkit.dataset.image.utility import ImageDatasetUtil
+from tftk.dataset.image.utility import ImageDatasetUtil
 
 class ImageTrain():
 
@@ -33,6 +33,10 @@ class ImageTrain():
         # model.compile(optimizer=optimizer,  loss=loss,  metrics="val_loss")
 
         model.compile(optimizer=optimizer, loss=loss, metrics=["acc"])
+
+        if tf.__version__ == '2.1.0':
+            pass
+
         model.summary()
 
         """

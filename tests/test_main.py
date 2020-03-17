@@ -1,24 +1,34 @@
 import tensorflow as tf
-from tfkit.dataset.image.anomaly_detection import MVTecAd
-from tfkit.dataset.image.classification import Mnist
-from tfkit.dataset.image.classification import Cifar10
-from tfkit.dataset.image.classification import ImageLabelFolderDataset
-from tfkit.model.image.base import SimpleBaseModel
-from tfkit.model.classify import SoftmaxClassifyModel
-from tfkit.dataset.image.utility import ImageDatasetUtil
-from tfkit.train.image import ImageTrain
-from tfkit.train.callbacks import HandyCallback
+
+from tftk.dataset.image.anomaly_detection import MVTecAd
+from tftk.dataset.image.classification import Mnist
+from tftk.dataset.image.classification import Cifar10
+from tftk.dataset.image.classification import ImageLabelFolderDataset
+from tftk.dataset.image.classification import ImageNet
+from tftk.model.image.base import SimpleBaseModel
+from tftk.model.classify import SoftmaxClassifyModel
+from tftk.dataset.image.utility import ImageDatasetUtil
+from tftk.train.image import ImageTrain
+from tftk.train.callbacks import HandyCallback
 
 from PIL import Image
 
-from tfkit.augment.image import ImageAugument
+from tftk.augment.image import ImageAugument
 
 
-# from tfkit.model.image.base import ResNet50
-# from tfkit.model.image.base import MobileNetV2
+
+
+# from tftk.model.image.base import ResNet50
+# from tftk.model.image.base import MobileNetV2
 
 
 if __name__ == '__main__':
+
+
+    dataset, num = ImageNet.get_train_dataset()
+    
+
+    """
     dataset, len  = MVTecAd.get_train_dataset(type="bottle")
     print(dataset)
     print(len)
@@ -49,8 +59,10 @@ if __name__ == '__main__':
             array = data["image"].numpy()
             im = Image.fromarray(array)
             im.show()
+    """
 
     """
+
     dataset, len = Mnist.get_train_dataset()
 
     dataset = dataset.map(ImageDatasetUtil.dataset_init_classification(10)) # .map(ImageDatasetUtil.resize(50,50))
@@ -67,7 +79,7 @@ if __name__ == '__main__':
         train_size = train_size,
         validation_data=validation,
         validation_size = validation_size,
-        batch_size=50,
+        batch_size=300,
         shuffle_size=1000,
         model=model,
         callbacks=callbacks,
@@ -77,5 +89,4 @@ if __name__ == '__main__':
     """
 
     # train,train_size,50,validation,validation_size,1000,model,None,"rmsprop","categorical_crossentropy")
-
     # model:tf.kearas.Model = ConvAutoEncoder.get_model()
