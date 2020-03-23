@@ -59,6 +59,29 @@ class ImageLabelFolderDataset():
 
 
 
+class Food1o1(BaseDataset):
+    @classmethod
+    def get_train_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="food101", split="train",with_info=True)
+        return ds, info.splits["train"].num_examples
+
+    @classmethod
+    def get_test_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="food101", split="test",with_info=True)
+        return ds, info.splits["test"].num_examples
+
+
+class PatchCamelyon(BaseDataset):
+    @classmethod
+    def get_train_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="patch_camelyon", split="train",with_info=True)
+        return ds, info.splits["train"].num_examples
+
+    @classmethod
+    def get_test_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="patch_camelyon", split="test",with_info=True)
+        return ds, info.splits["test"].num_examples
+
 
 class ImageNet(BaseDataset):
     """ImageNetリサイズ画像
