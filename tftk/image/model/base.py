@@ -2,7 +2,7 @@ from abc import ABC, abstractclassmethod
 import tensorflow as tf
 
 
-class BaseModel(ABC):
+class AbstractClassificationModel(ABC):
 
     def __init__(self):
         pass
@@ -12,7 +12,7 @@ class BaseModel(ABC):
         pass
 
 
-class SimpleBaseModel(BaseModel):
+class SimpleBaseModel(AbstractClassificationModel):
     def __init__(self):
         pass
     
@@ -34,7 +34,8 @@ class SimpleBaseModel(BaseModel):
         model = tf.keras.Model(inputs=inputs,outputs=x)
         return model
 
-class ResNet50(BaseModel):
+
+class ResNet50(AbstractClassificationModel):
     def __init__(self):
         pass
     
@@ -43,7 +44,7 @@ class ResNet50(BaseModel):
         model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights=None, input_shape=(w,h,c),pooling="max")
         return model
 
-class ResNetV2(BaseModel):
+class ResNet50V2(AbstractClassificationModel):
 
     def __init__(self):
         pass

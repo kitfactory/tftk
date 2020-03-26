@@ -1,0 +1,107 @@
+from typing import List
+import tensorflow as tf
+
+from tftk.image.dataset import ImageDatasetUtil
+
+class Trainer():
+
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def train_classification(
+        cls,
+        train_data:tf.data.Dataset, train_size:int, batch_size:int,
+        validation_data:tf.data.Dataset, validation_size:int,
+        shuffle_size:int,
+        model:tf.keras.Model,
+        callbacks:List[tf.keras.callbacks.Callback],
+        optimizer:tf.keras.optimizers.Optimizer,
+        loss:tf.keras.losses.Loss,
+        max_epoch:int = 5):
+
+        # dataset = dataset.shuffle(1024).batch(32).prefetch(tf.data.experimental.AUTOTUNE)
+
+        train_data = train_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE).repeat()
+        if shuffle_size != 0:
+            train_data = train_data.shuffle(shuffle_size)
+        train_data = train_data.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
+
+        validation_data = validation_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        validation_data = validation_data.repeat().batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
+
+        model.compile(optimizer=optimizer, loss=loss, metrics=["acc"])
+
+        if tf.__version__ == '2.1.0':
+            pass
+
+        model.summary()
+
+        """
+        optimizer='rmsprop', loss=None, metrics=None, loss_weights=None,
+        sample_weight_mode=None, weighted_metrics=None, target_tensors=None,
+        distribute=None, **kwargs
+        """
+        steps_per_epoch = train_size//batch_size
+        validation_steps = validation_size//batch_size
+        model.fit(
+            train_data,
+            callbacks=callbacks,
+            validation_data=validation_data,
+            steps_per_epoch=steps_per_epoch,
+            validation_steps=validation_steps,
+            epochs=max_epoch)
+    
+    @classmethod
+    def train_autoencoder_model(
+        cls,
+        train_data:tf.data.Dataset, train_size:int, batch_size:int,
+        validation_data:tf.data.Dataset, validation_size:int,
+        shuffle_size:int,
+        model:tf.keras.Model,
+        callbacks:List[tf.keras.callbacks.Callback],
+        optimizer:tf.keras.optimizers.Optimizer,
+        loss:tf.keras.losses.Loss,
+        max_epoch:int = 5
+        ):
+
+        train_data = train_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE).repeat()
+        if shuffle_size != 0:
+            train_data = train_data.shuffle(shuffle_size)
+        train_data = train_data.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
+
+        validation_data = validation_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        validation_data = validation_data.repeat().batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
+
+        model.compile(optimizer=optimizer, loss=loss, metrics=["loss"])
+
+        if tf.__version__ == '2.1.0':
+            pass
+
+        model.summary()
+
+        """
+        optimizer='rmsprop', loss=None, metrics=None, loss_weights=None,
+        sample_weight_mode=None, weighted_metrics=None, target_tensors=None,
+        distribute=None, **kwargs
+        """
+        steps_per_epoch = train_size//batch_size
+        validation_steps = validation_size//batch_size
+        model.fit(
+            train_data,
+            callbacks=callbacks,
+            validation_data=validation_data,
+            steps_per_epoch=steps_per_epoch,
+            validation_steps=validation_steps,
+            epochs=max_epoch)
+        
+
+"""
+fit(
+    x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None,
+    validation_split=0.0, validation_data=None, shuffle=True, class_weight=None,
+    sample_weight=None, initial_epoch=0, steps_per_epoch=None,
+    validation_steps=None, validation_freq=1, max_queue_size=10, workers=1,
+    use_multiprocessing=False, **kwargs
+)
+"""

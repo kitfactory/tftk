@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from tftk.dataset.image.anomaly_detection import MVTecAd
-from tftk.dataset.image.classification import Mnist
-from tftk.dataset.image.classification import Cifar10
-from tftk.dataset.image.classification import ImageLabelFolderDataset
-from tftk.dataset.image.classification import Food1o1
-from tftk.dataset.image.classification import PatchCamelyon
+from tftk.dataset.image import MVTecAd
+from tftk.dataset.image import Mnist
+from tftk.dataset.image import Cifar10
+from tftk.dataset.image import ImageLabelFolderDataset
+from tftk.dataset.image import Food1o1
+from tftk.dataset.image import PatchCamelyon
 from tftk.model.image.base import SimpleBaseModel
 from tftk.model.classify import SoftmaxClassifyModel
 from tftk.dataset.image.utility import ImageDatasetUtil
