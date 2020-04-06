@@ -5,7 +5,7 @@ class ImageDatasetUtil():
 
     def __init__(self):
         pass
-    
+
     @classmethod
     def devide_train_validation(cls, dataset:tf.data.Dataset, length:int, ratio:float)->((tf.data.Dataset,int),(tf.data.Dataset,int)):
         """学習用と検証用のデータセットに分割する。
@@ -18,7 +18,6 @@ class ImageDatasetUtil():
         Returns:
             (Dataset,int),(Dataset,int) -- (学習用のデータセット、データセットのサイズ),(検証用データセット,データセットのサイズ)
         """
-
         train_size = int(length * ratio)
         validation_size = length - train_size
         train_set = dataset.take(train_size).skip(validation_size)
@@ -51,7 +50,6 @@ class ImageDatasetUtil():
     def one_hot(cls, classes:int):
         """データセットに指定クラス数のone-hot処理を与えるmap関数
 
-        
         Arguments:
             classes {int} -- [description]
         
@@ -78,7 +76,7 @@ class ImageDatasetUtil():
             data["image"]=data["image"]/255.0 - offset
             return data
         return image_reguralization_map
-    
+
     @classmethod
     def dataset_init_classification(cls, classes, offset:float=0.0)->Callable[[Dict],Dict]:
         """ 画像を数値/255.0、ラベルのont-hot化、オフセットの除去
@@ -89,12 +87,12 @@ class ImageDatasetUtil():
         Returns:
             [type] -- [description]
         """
-        def __dataset_init_classification(data:Dict)->Dict:
+        def dataset_init_classification_map(data:Dict)->Dict:
             data["label"] = tf.one_hot(data["label"], classes)
             data["image"] = tf.cast(data["image"], tf.float32)
             data["image"] = (data["image"]/255.0) - offset
             return data
-        return __dataset_init_classification
+        return dataset_init_classification_map
     
     @classmethod
     def dict_to_classification_tuple(cls):
@@ -103,22 +101,20 @@ class ImageDatasetUtil():
         Returns:
             [type]: [description]
         """
-        def __dict_to_classification_tuple(data:Dict)->(tf.Tensor,tf.Tensor):
+        def dict_to_classification_tuple_map(data:Dict)->(tf.Tensor,tf.Tensor):
             return (data["image"], data["label"])
-        return __dict_to_classification_tuple
-
+        return dict_to_classification_tuple_map
 
     @classmethod
-    def dict_to_classification_tuple(cls):
+    def dict_to_autoencoder_tuple(cls):
         """dict形式のデータをtf.keras.Model.fit()用に変換する
         
         Returns:
             [type]: [description]
         """
-        def __dict_to_classification_tuple(data:Dict)->(tf.Tensor,tf.Tensor):
-            return (data["image"], data["label"])
-        return __dict_to_classification_tuple
-
+        def dict_to_autoencoder_tuple_map(data:Dict)->(tf.Tensor,tf.Tensor):
+            return (data["image"], data["image"])
+        return dict_to_autoencoder_tuple_map
 
     @classmethod
     def resize_with_crop_or_pad(cls, dataset:tf.data.Dataset, hight:int, width:int)->Callable[[Dict],Dict]:
@@ -131,10 +127,10 @@ class ImageDatasetUtil():
         Returns:
             Mapする関数: Dataset.map()に適用する関数
         """
-        def __resize_with_crop_or_pad(data:Dict)->Dict:
+        def resize_with_crop_or_pad_map(data:Dict)->Dict:
             data["image"] = tf.image.resize_with_crop_or_pad(data["image"], hight, width)
             return data
-        return __resize_with_crop_or_pad
+        return resize_with_crop_or_pad_map
     
     @classmethod
     def resize(cls, h:int, w:int)->Callable[[Dict],Dict]:
@@ -147,8 +143,7 @@ class ImageDatasetUtil():
         Returns:
             Mapする関数: Dataset.map()に適用する関数
         """
-
-        def __resize(data:Dict)->Dict:
+        def resize_map(data:Dict)->Dict:
             data["image"] = tf.image.resize(data["image"], (h,w))
             return data
-        return __resize
+        return resize_map

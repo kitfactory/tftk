@@ -3,54 +3,58 @@
 ## 1. What is TFTK ?
 
 TFTKはTensorFlowを簡単化するライブラリです。
-学習するにあたって、あのモデルを使いたい、あのデータ拡張を使いたい、あの何かをつかいたいを簡単にします。
+まだ画像分類しかありませんが、学習するにあたって、あのモデルを使いたい、あのデータ拡張を使いたいなどを簡単にします。
 
 * データセットの取得を簡単にします。
 * データセットの操作を簡単にします。
 * データの拡張を簡単にします。
-* モデルも多数組み合わせられます。単純なCNNモデルから、ResNetまで。
-
+* モデルも多数組み合わせられます。単純なCNNモデルから、ResNet/EfficientNetまで。
 
 ## 2.サポートされているパーツ
 
 __データセット操作__
 
+|データ操作|説明|
+|:--|:--|
+|画像データと分割|あるサイズに対して|
 
+__データの操作__
+
+|データ操作|説明|
+|:--|:--|
+|Resize|画像を学習するモデルに合わせて最適なサイズにします|
+|Crop&Pad|あるサイズに対して|
+|画像の正規化|0-255.0→0～1.0|
 
 __データ拡張__
 
 |データ化拡張|説明|リンク|
 |:--|:--|:--|
-|Mixup| | |
-|Cutout| | |
-|RandAugment|| |
+|Mixup|2つの画像を混ぜ合わせる画像拡張です。| |
+|RandAugment|AutoAugument相当の精度向上をするSOTAデータ拡張手法です。| |
+|PickupRandAugument|RandAugumentの中の| |
 
 __モデル__
 
-|モデル| | |
+|モデル|説明|リンク|
 |:--|:--|:--|
-|サンプルCNN| | |
-|ResNet50| | |
-|ResNet152| | |
-|MobileNet| | |
-|MobileNetV2| | |
+|サンプルCNN|ごくごく簡単なCNNのモデルです。|--|
+|ResNet18|小さな画像に好適なResNetの小規模なモデルです。| |
+|ResNet34|小さな画像に好適なResNetの小規模なモデルです。| |
+|ResNet50|ある程度の量の画像に好適なモデルです。| |
+|ResNet152|ResNetの最も大きなモデルです。| |
+|MobileNet|ResNetより軽量なモデルです。| |
+|MobileNetV2|ResNetより軽量なモデルです。| |
+|EfficientNet|(予定)|(予定)|
 
-__距離学習__
+__活性化関数(Relu)__
 
-| | | |
-|:--|:--|:--|
-| | | |
+以下の活性化関数でReluをオーバーライドすることが可能です。
 
-__最適化__
-
-| | | |
+|活性化関数|説明|リンク|
 |:--|:--|:--|
 |Mish| | |
-|relu| | |
-
-__CAM__
-
-
+|Swash| | |
 
 
 ## サンプル
@@ -61,12 +65,12 @@ https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py
 
 に比較して、半分以下の労力で記述できます。
 
+__After__
+
 ```
-from tftk.dataset.image.classification import Mnist
-from tftk.dataset.image.utility import ImageDatasetUtil
-from tftk.model.image.base import SimpleBaseModel
-from tftk.model.classify import SoftmaxClassifyModel
-from tftk.train.callbacks import HandyCallback
+from tftk.image.dataset import Mnist,ImageDatasetUtil
+from tftk.image.model import SimpleClassificationModel
+from tftk.image.callbacks import HandyCallback
 from tftk.train.image import ImageTrain
 
 dataset, len = Mnist.get_train_dataset()
@@ -89,3 +93,5 @@ ImageTrain.train_image_classification(
     loss="categorical_crossentropy"
 )
 ```
+
+__Before__

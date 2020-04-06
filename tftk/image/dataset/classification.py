@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from tftk.dataset.base import BaseDataset
+from tftk.image.dataset import BaseDataset
 
 class Mnist(BaseDataset):
     @classmethod
@@ -12,7 +12,7 @@ class Mnist(BaseDataset):
     @classmethod
     def get_test_dataset(cls)->(tf.data.Dataset, int):
         ds, info =  tfds.load(name="mnist", split="test",with_info=True)
-        return ds, info.splits["test"].num_examples 
+        return ds, info.splits["test"].num_examples
 
 
 class Cifar10(BaseDataset):
@@ -83,7 +83,7 @@ class PatchCamelyon(BaseDataset):
         return ds, info.splits["test"].num_examples
 
 
-class ImageNet(BaseDataset):
+class ImageNetResized(BaseDataset):
     """ImageNetリサイズ画像
     
     Arguments:   
@@ -104,3 +104,13 @@ class ImageNet(BaseDataset):
 
 
 
+class ImageNet2012(BaseDataset):
+    @classmethod
+    def get_train_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="imagenet2012", split="train",with_info=True,data_dir="D:\\imagenet")
+        return ds, 1281167
+
+    @classmethod
+    def get_test_dataset(cls)->(tf.data.Dataset, int):
+        ds, info = tfds.load(name="imagenet2012", split="ttest",with_info=True,data_dir="D:\\imagenet")
+        return ds, info.splits["test"].num_examples

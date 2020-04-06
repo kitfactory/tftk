@@ -1,13 +1,18 @@
+from . base import *
 from . classification import *
 from . anomaly_detection import *
 from . utility import *
 
-__all__ = [
+all = [
+    'BaseDataset',
+    'MVTecAd',
     'Mnist',
     'Cifar10',
-    'ImageLabelFolderDataset',
     'Food101',
     'PatchCamelyon',
-    'MVTecAd',
-    'ImageDatasetUtil'
+    'ImageLabelFolderDataset',
+    'ImageNetResized',
+    'ImageDatasetUtil',
+    'ImageNet2012',
+    'AbstractClassificationModel'
 ]

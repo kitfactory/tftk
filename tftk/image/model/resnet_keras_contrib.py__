@@ -19,7 +19,7 @@ Implementation Adapted from: github.com/raghakot/keras-resnet
 import tensorflow as tf
 import six
 
-from tftk.model.image import BaseModel
+from tftk.image.model import AbstractClassificationModel
 
 ## default is channel last
 ROW_AXIS = 1

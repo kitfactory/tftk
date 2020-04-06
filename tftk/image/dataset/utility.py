@@ -25,6 +25,11 @@ class ImageDatasetUtil():
         validation_set = dataset.skip(train_size).take(validation_size)
         return ((train_set,train_size),(validation_set,validation_size))
 
+
+    @classmethod
+    def k_fold_cross_validation_dataset(cls, dataset:tf.data.Dataset, length:int, ratio:float)->((tf.data.Dataset,int),(tf.data.Dataset,int)):
+        pass        
+
     @classmethod
     def count_image_dataset(cls, dataset:tf.data.Dataset)->(int, Dict):
         """データセットのラベルごとの数を数える。
@@ -114,6 +119,7 @@ class ImageDatasetUtil():
         Returns:
             [type]: [description]
         """
+        pass
         
 
 

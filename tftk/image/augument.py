@@ -12,7 +12,7 @@ class ImageAugument():
     _MAX_LEVEL = 10.
 
     @classmethod
-    def mixup_apply(cls, dataset: tf.data.Dataset, mixup_size: int, alpha: float) -> Callable[[tf.data.Dataset], tf.data.Dataset]:
+    def mixup_apply(cls, mixup_size: int, alpha: float) -> Callable[[tf.data.Dataset], tf.data.Dataset]:
         """Mixup拡張をおこなう。ラベルはone-hot化されている事。
            dataset:tf.data.Dataset = somedataset
            mixuped = dataset.apply(DataAugument.mixup_apply(100,0.8))
@@ -26,24 +26,19 @@ class ImageAugument():
             tf.data.Dataset: mixuped dataset.
         """
 
-        def mixup(cls, dataset: tf.data.Dataset) -> tf.data.Dataset:
-            shuffle_dataset = dataset.shuffle(mixup_size)
-            zipped = tf.data.Dataset.zip((dataset, shuffle_dataset))
-
-            def __mixup_map(data, shuffled):
-                print(data)
-                print(shuffled)
+        def mixup(dataset: tf.data.Dataset) -> tf.data.Dataset:
+            def mixup_map(data, shuffled):
                 dist = tfp.distributions.Beta([alpha], [alpha])
                 beta = dist.sample([1])[0][0]
 
                 ret = {}
-                ret["image"] = (data["image"]) * beta + \
-                    (shuffled["image"] * (1-beta)),
-                ret["label"] = (data["label"]) * beta + \
-                    (shuffled["label"] * (1-beta)),
+                ret["image"] = (data["image"]) * beta + (shuffled["image"] * (1-beta))
+                ret["label"] = (data["label"]) * beta + (shuffled["label"] * (1-beta))
                 return ret
 
-            return zipped.map(__mixup_map, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+            shuffle_dataset = dataset.shuffle(mixup_size)
+            zipped = tf.data.Dataset.zip((dataset, shuffle_dataset))
+            return zipped.map(mixup_map, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
         return mixup
 

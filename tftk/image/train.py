@@ -32,8 +32,6 @@ class Trainer():
 
         model.compile(optimizer=optimizer, loss=loss, metrics=["acc"])
 
-        if tf.__version__ == '2.1.0':
-            pass
 
         model.summary()
 
@@ -51,7 +49,8 @@ class Trainer():
             steps_per_epoch=steps_per_epoch,
             validation_steps=validation_steps,
             epochs=max_epoch)
-    
+
+
     @classmethod
     def train_autoencoder_model(
         cls,

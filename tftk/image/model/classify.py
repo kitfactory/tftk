@@ -1,8 +1,7 @@
 import tensorflow as tf
 
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractclassmethod, abstractmethod
 import tensorflow as tf
-
 
 class AbstractClassificationModel(ABC):
 
@@ -10,21 +9,21 @@ class AbstractClassificationModel(ABC):
         pass
 
     @abstractclassmethod
-    def __get_base_model(cls,input:(int,int,int),include_top:bool,weighs:str,**kwargs)->tf.keras.Model:
+    def get_base_model(cls,input:(int,int,int),include_top:bool,weighs:str)->tf.keras.Model:
         raise NotImplementedError()
 
     @classmethod
     def get_model(cls, input_shape:(int,int,int), include_top=False, weights=None, classes=1000, **kwargs)-> tf.keras.Model:
-        base = cls.__get_base_model(input,include_top, weights, kwargs)
-
+        base = cls.get_base_model(input_shape,include_top, weights)
+        model = SoftmaxClassifyModel.get_classify_model(base,classes)
+        return model
 
 class SimpleClassificationModel(AbstractClassificationModel):
     def __init__(self):
         pass
     
     @classmethod
-    def __get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str,**kwargs) -> tf.keras.Model:
-
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str,**kwargs) -> tf.keras.Model:
         inputs = tf.keras.Input(shape=input_shape,name='image')
         x = tf.keras.layers.Conv2D(32,(3,3),padding='same')(inputs)
         x = tf.keras.layers.Activation('relu')(x)
@@ -47,8 +46,8 @@ class ResNet50(AbstractClassificationModel):
         pass
     
     @classmethod
-    def __get_base_model(cls, h:int,w:int,c:int,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights=None, input_shape=(w,h,c),pooling="max")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str) -> tf.keras.Model:
+        model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights=None, input_shape=input_shape,pooling="max")
         return model
 
 class ResNet50V2(AbstractClassificationModel):
@@ -57,11 +56,9 @@ class ResNet50V2(AbstractClassificationModel):
         pass
     
     @classmethod
-    def get_base_model(cls, h:int,w:int,c:int,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.resnet50.ResNet50V2(include_top=False, weights=None, input_shape=(w,h,c),pooling="max")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.resnet50.ResNet50V2(include_top=False, weights=None, input_shape=input_shape,pooling="max")
         return model
-
-
 
 
 class SoftmaxClassifyModel():
