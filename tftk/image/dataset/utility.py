@@ -124,7 +124,7 @@ class ImageDatasetUtil():
 
 
     @classmethod
-    def resize_with_crop_or_pad(cls, dataset:tf.data.Dataset, hight:int, width:int)->Callable[[Dict],Dict]:
+    def resize_with_crop_or_pad(cls, hight:int, width:int)->Callable[[Dict],Dict]:
         """データセットの画像をクロップないしはパッドしてリサイズする。
         
         Args:
@@ -134,10 +134,10 @@ class ImageDatasetUtil():
         Returns:
             Mapする関数: Dataset.map()に適用する関数
         """
-        def __resize_with_crop_or_pad(data:Dict)->Dict:
+        def resize_with_crop_or_pad_map(data:Dict)->Dict:
             data["image"] = tf.image.resize_with_crop_or_pad(data["image"], hight, width)
             return data
-        return __resize_with_crop_or_pad
+        return resize_with_crop_or_pad_map
     
     @classmethod
     def resize(cls, h:int, w:int)->Callable[[Dict],Dict]:

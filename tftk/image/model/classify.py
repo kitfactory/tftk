@@ -47,7 +47,7 @@ class ResNet50(AbstractClassificationModel):
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str) -> tf.keras.Model:
-        model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights=None, input_shape=input_shape,pooling="max")
+        model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights=None, input_shape=input_shape,pooling="avg")
         return model
 
 class ResNet50V2(AbstractClassificationModel):
@@ -57,7 +57,7 @@ class ResNet50V2(AbstractClassificationModel):
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weighs:str,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.resnet50.ResNet50V2(include_top=False, weights=None, input_shape=input_shape,pooling="max")
+        model = tf.keras.applications.resnet50.ResNet50V2(include_top=False, weights=None, input_shape=input_shape,pooling="avg")
         return model
 
 
@@ -73,7 +73,7 @@ class SoftmaxClassifyModel():
         input = base_model.input
         last = base_model.output
         x = tf.keras.layers.Flatten(name='classify-1')(last)
-        x = tf.keras.layers.Dense(classes)(x)
-        x = tf.keras.layers.Activation('softmax')(x)
+        x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)
+        x = tf.keras.layers.Activation('softmax',dtype='float32')(x)
         return tf.keras.Model(input,x)
 

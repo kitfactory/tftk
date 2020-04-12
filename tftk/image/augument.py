@@ -36,7 +36,7 @@ class ImageAugument():
                 ret["label"] = (data["label"]) * beta + (shuffled["label"] * (1-beta))
                 return ret
 
-            shuffle_dataset = dataset.shuffle(mixup_size)
+            shuffle_dataset = dataset.prefetch(tf.data.experimental.AUTOTUNE).shuffle(mixup_size)
             zipped = tf.data.Dataset.zip((dataset, shuffle_dataset))
             return zipped.map(mixup_map, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 

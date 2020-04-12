@@ -1,7 +1,8 @@
 from abc import ABC, abstractclassmethod
+
 import tensorflow as tf
 import math
-
+import os
 
 class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
     """Cosine annealing scheduler.
@@ -63,9 +64,9 @@ class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
         logs['lr'] = tf.keras.backend.get_value(self.model.optimizer.lr)
 
 
-class HandyCallback():
+class CallbackBuilder():
     @classmethod
-    def get_callbacks(cls, tensorboard_log_dir:str=None, save_weights="./tmp/model.hdf5", monitor="val_acc", init_lr=1e-2, max_epoch= 60, **kwargs):
+    def get_callbacks(cls, tensorboard_log_dir:str="./temp/log", save_weights="./tmp/model.hdf5", monitor="val_acc", consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60):
         """よく利用するコールバックを設定します。
         
         Keyword Arguments:
@@ -79,12 +80,25 @@ class HandyCallback():
 
         callbacks = []
         if tensorboard_log_dir is not None:
+            files = os.listdir(tensorboard_log_dir)
+            num = -1
+            for f in files:
+                try:
+                    tmp = int(f)
+                    print("has tmp",tmp)
+                    if tmp > num:
+                        num = tmp
+                except Exception as e:
+                    pass
+            if num != -1:
+                num = num + 1
+            tensorboard_log_dir = tensorboard_log_dir + os.path.sep + str(num)
             callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir))
         if save_weights is not None:
             callbacks.append(tf.keras.callbacks.ModelCheckpoint(filepath=save_weights,monitor="val_acc",save_best_only=True,save_weights_only=True))
-        
-        cosine_annealer = CosineAnnealingScheduler(max_epoch,eta_max=init_lr,eta_min=0.0)
-        callbacks.append(cosine_annealer)
+        if consine_annealing == True:
+            cosine_annealer = CosineAnnealingScheduler(cosine_max_epochs,eta_max=cosine_init_lr,eta_min=0.0)
+            callbacks.append(cosine_annealer)
 
         return callbacks
 

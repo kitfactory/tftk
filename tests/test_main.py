@@ -24,23 +24,30 @@ from tftk.image.dataset import ImageNetResized
 from tftk.image.dataset import Food1o1
 
 from tftk.image.model.classify import ResNet50
-from tftk.image.callback import HandyCallback
 from tftk.image.train import Trainer
 from tftk.image.augument import ImageAugument
+
+from tftk.callback import CallbackBuilder
+from tftk.optimizer import OptimizerBuilder
+import tftk
 
 # from tftk.model.image.base import ResNet50
 # from tftk.model.image.base import MobileNetV2
 
 if __name__ == '__main__':
 
+    tftk.USE_MIXED_PRECISION()
+    # tftk.USE_MISH_AS_RELU()
     dataset, len = Food1o1.get_train_dataset()
-    dataset = dataset.map(ImageDatasetUtil.dataset_init_classification(classes=101))
-    dataset = dataset.map(ImageDatasetUtil.resize(224,224))
+    dataset = dataset.map(ImageDatasetUtil.resize_with_crop_or_pad(224,224))
     (train,train_len),(validation,validation_len)=ImageDatasetUtil.devide_train_validation(dataset,len,0.9)
-    train = train.apply(ImageAugument.mixup_apply(100, 0.8))
+    train = train.map(ImageAugument.randaugment_map(3,10))
+    train = train.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(101))
+    validation = validation.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(101))
+    optimizer = OptimizerBuilder.get_optimizer(name="adadelta",adadelta_rho=0.96)
     model = ResNet50.get_model(input_shape=(224,224,3),classes=101)
-    callbacks = HandyCallback.get_callbacks(tensorboard_log="tmp\\log",save_weights="tmp\\weigths.hdf5", init_lr=1e-2, max_epoch=50)
-    Trainer.train_classification(train_data=train,train_size=train_len,batch_size=24,validation_data=validation,validation_size=validation_len,shuffle_size=10000,model=model,callbacks=callbacks,optimizer="sgd",loss="categorical_crossentropy",max_epoch=50)
+    callbacks = CallbackBuilder.get_callbacks(tensorboard_log_dir="tmp\\log",save_weights="tmp\\weigths.hdf5", consine_annealing=False)
+    Trainer.train_classification(train_data=train,train_size=train_len,batch_size=24,validation_data=validation,validation_size=validation_len,shuffle_size=10000,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=50)
     
     """
     dataset, len  = MVTecAd.get_train_dataset(type="bottle")

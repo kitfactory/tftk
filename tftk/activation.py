@@ -3,7 +3,7 @@
 ## Import Necessary Modules
 import tensorflow as tf
 
-class Mish(tf.keras.Activation):
+class Mish(tf.keras.layers.Activation):
     '''
     Mish Activation Function.
     .. math::
@@ -19,7 +19,6 @@ class Mish(tf.keras.Activation):
 
     def __init__(self, activation, **kwargs):
         super(Mish, self).__init__(activation, **kwargs)
-        tf.print("use mish!!")
         self.__name__ = 'Mish'
 
 
@@ -28,5 +27,6 @@ def mish(inputs):
 
 tf.keras.utils.get_custom_objects().update({'Mish': Mish(mish)})
 
-def use_mish_as_relu():
+def USE_MISH_AS_RELU():
+    print("USE_MISH_AS_RELU")
     tf.keras.utils.get_custom_objects().update({'relu': Mish(mish)})    
