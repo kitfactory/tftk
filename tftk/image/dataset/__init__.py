@@ -14,5 +14,7 @@ all = [
     'ImageNetResized',
     'ImageDatasetUtil',
     'ImageNet2012',
-    'AbstractClassificationModel'
+    'AbstractClassificationModel',
+    'ImageCrawler',
+    'Place365Small'
 ]

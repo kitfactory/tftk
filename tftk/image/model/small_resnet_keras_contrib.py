@@ -19,7 +19,7 @@ Implementation Adapted from: github.com/raghakot/keras-resnet
 import tensorflow as tf
 import six
 
-from tftk.image.model import AbstractClassificationModel
+from . classification import AbstractClassificationModel
 
 ## default is channel last
 ROW_AXIS = 1
@@ -44,8 +44,8 @@ def _handle_dim_ordering():
 def _bn_relu(x, bn_name=None, relu_name=None):
     """Helper to build a BN -> relu block
     """
-    norm = tf.keras.layers.normalization.BatchNormalization(axis=CHANNEL_AXIS, name=bn_name)(x)
-    return tf.keras.activations.Activation("relu", name=relu_name)(norm)
+    norm = tf.keras.layers.BatchNormalization(axis=CHANNEL_AXIS, name=bn_name)(x)
+    return tf.keras.layers.Activation("relu", name=relu_name)(norm)
 
 
 def _conv_bn_relu(**conv_params):
@@ -133,7 +133,8 @@ def _shortcut(input_feature, residual, conv_name_base=None, bn_name_base=None):
         shortcut = tf.keras.layers.BatchNormalization(axis=CHANNEL_AXIS,
                                       name=bn_name_base)(shortcut)
 
-    return tf.keras.layers.merge.add([shortcut, residual])
+
+    return tf.keras.layers.add([shortcut, residual])
 
 
 def _residual_block(block_function, filters, blocks, stage,
@@ -348,11 +349,13 @@ def ResNet(input_shape=None, classes=10, block='bottleneck', residual_unit='v2',
     if repetitions is None:
         repetitions = [3, 4, 6, 3]
     # Determine proper input shape
-    input_shape = tf.keras_applications.imagenet_utils._obtain_input_shape(input_shape,
-                                      default_size=32,
-                                      min_size=8,
-                                      data_format=tf.keras.backend.image_data_format(),
-                                      require_flatten=include_top)
+
+    
+    # input_shape = tf.keras_applications.imagenet_utils._obtain_input_shape(input_shape,
+    #                                  default_size=32,
+    #                                  min_size=8,
+    #                                  data_format=tf.keras.backend.image_data_format(),
+    #                                  require_flatten=include_top)
     _handle_dim_ordering()
     if len(input_shape) != 3:
         raise Exception("Input shape should be a tuple (nb_channels, nb_rows, nb_cols)")
@@ -379,13 +382,14 @@ def ResNet(input_shape=None, classes=10, block='bottleneck', residual_unit='v2',
     if tf.keras.backend.image_data_format() == 'channels_first':
         input_shape = (input_shape[1], input_shape[2], input_shape[0])
     # Determine proper input shape
-    input_shape = tf.keras_applications.imagenet_utils._obtain_input_shape(input_shape,
-                                      default_size=32,
-                                      min_size=8,
-                                      data_format=tf.keras.backend.image_data_format(),
-                                      require_flatten=include_top)
+    #input_shape = tf.keras_applications.imagenet_utils._obtain_input_shape(input_shape,
+    #                                  default_size=32,
+    #                                  min_size=8,
+    #                                  data_format=tf.keras.backend.image_data_format(),
+    #                                  require_flatten=include_top)
 
-    img_input = tf.kera.layers.Input(shape=input_shape, tensor=input_tensor)
+
+    img_input = tf.keras.layers.Input(shape=input_shape, tensor=input_tensor)
     x = _conv_bn_relu(filters=initial_filters, kernel_size=initial_kernel_size,
                       strides=initial_strides)(img_input)
     if initial_pooling == 'max':
@@ -464,21 +468,32 @@ def ResNet152_Model(input_shape, classes):
     return ResNet(input_shape, classes, bottleneck, repetitions=[3, 8, 36, 3])
 
 
-class ResNet18(BaseModel):
+
+class ResNet18(AbstractClassificationModel):
     def __init__(self):
         pass
 
     @classmethod
-    def get_base_model(cls, h, w, c, **kwargs):
-        return ResNet18_Model(input_shape=[h,w,c])
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False, weighs:str=None,**kwargs) -> tf.keras.Model:
+        return ResNet(input_shape, basic_block, repetitions=[2, 2, 2, 2],include_top=False,final_pooling='avg')
 
-class ResNet34(BaseModel):
+
+class ResNet34(AbstractClassificationModel):
     def __init__(self):
         pass
 
     @classmethod
-    def get_base_model(cls, h, w, c, **kwargs):
-        return ResNet34_Model(input_shape=[h,w,c])
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False,weighs:str=None,**kwargs) -> tf.keras.Model:
+        return ResNet(input_shape, basic_block, repetitions=[3, 4, 6, 3], include_top=False, final_pooling='avg')
+
+
+class ResNeSt18(AbstractClassificationModel):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False, weighs:str=None,**kwargs) -> tf.keras.Model:
+        return ResNet(input_shape, basic_block, repetitions=[2, 2, 2, 2],include_top=False,final_pooling='avg')
 
 
 """

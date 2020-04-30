@@ -14,17 +14,18 @@ TFTKはTensorFlowを簡単化するライブラリです。
 
 __データセット操作__
 
-|データ操作|説明|
-|:--|:--|
-|画像データと分割|あるサイズに対して|
+|データ操作|説明|メソッド|
+|:--|:--|:--|
+|データセットの分割|tftk.image.dataset.utility.ImageDatasetUtility#devide_train_validation()|
+|データセットの正規化|画素値を0-255から0.0～1.0に|
+|ラベルのone-hot化|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
 
 __データの操作__
 
-|データ操作|説明|
-|:--|:--|
-|Resize|画像を学習するモデルに合わせて最適なサイズにします|
-|Crop&Pad|あるサイズに対して|
-|画像の正規化|0-255.0→0～1.0|
+|データ操作|説明|メソッド|
+|:--|:--|:--|
+|Resize|画像を学習するモデルに合わせて最適なサイズにします| |
+|Crop&Pad|あるサイズに対して| |
 
 __データ拡張__
 
@@ -32,7 +33,6 @@ __データ拡張__
 |:--|:--|:--|
 |Mixup|2つの画像を混ぜ合わせる画像拡張です。| |
 |RandAugment|AutoAugument相当の精度向上をするSOTAデータ拡張手法です。| |
-|PickupRandAugument|RandAugumentの中の| |
 
 __モデル__
 
@@ -54,8 +54,6 @@ __活性化関数(Relu)__
 |活性化関数|説明|リンク|
 |:--|:--|:--|
 |Mish| | |
-|Swash| | |
-
 
 ## サンプル
 

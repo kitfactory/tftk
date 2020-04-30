@@ -66,7 +66,7 @@ class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
 
 class CallbackBuilder():
     @classmethod
-    def get_callbacks(cls, tensorboard_log_dir:str="./temp/log", save_weights="./tmp/model.hdf5", monitor="val_acc", consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60):
+    def get_callbacks(cls, base_dir:str=".\\tmp", tensorboard:bool=True, save_weights:bool=True, monitor="val_acc", consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0):
         """よく利用するコールバックを設定します。
         
         Keyword Arguments:
@@ -79,26 +79,33 @@ class CallbackBuilder():
         """
 
         callbacks = []
-        if tensorboard_log_dir is not None:
-            files = os.listdir(tensorboard_log_dir)
-            num = -1
-            for f in files:
-                try:
-                    tmp = int(f)
-                    print("has tmp",tmp)
-                    if tmp > num:
-                        num = tmp
-                except Exception as e:
-                    pass
-            if num != -1:
-                num = num + 1
-            tensorboard_log_dir = tensorboard_log_dir + os.path.sep + str(num)
+        files = os.listdir(base_dir)
+        max_num = 0
+        for f in files:
+            try:
+                tmp = int(f)
+                print("has tmp",tmp)
+                if tmp +1 > max_num:
+                    max_num = tmp + 1
+            except Exception as e:
+                pass
+
+        if tensorboard is True:
+            print("Callback-TensorBoard")
+            tensorboard_log_dir = base_dir + os.path.sep + str(max_num) + os.path.sep + "log"
             callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir))
-        if save_weights is not None:
-            callbacks.append(tf.keras.callbacks.ModelCheckpoint(filepath=save_weights,monitor="val_acc",save_best_only=True,save_weights_only=True))
+        if save_weights is True:
+            print("Callback-ModelCheckPoint")
+            save_path = base_dir + os.path.sep + str(max_num) + os.path.sep + "model.hdf5"
+            callbacks.append(tf.keras.callbacks.ModelCheckpoint(filepath=save_path,monitor="val_acc",save_best_only=True,save_weights_only=True))
         if consine_annealing == True:
+            print("Callback-CosineAnnealing")
             cosine_annealer = CosineAnnealingScheduler(cosine_max_epochs,eta_max=cosine_init_lr,eta_min=0.0)
             callbacks.append(cosine_annealer)
-
+        if reduce_lr_on_plateau ==True:
+            print("Callback-ReduceOnPlateau")
+            callbacks.append(tf.keras.callbacks.ReduceLROnPlateau(patience=reduce_patience,factor=reduce_factor,verbose=1,min_lr=reduce_min))
+        if early_stopping_patience != 0:
+            callbacks.append(tf.keras.callbacks.EarlyStopping(patience=early_stopping_patience,verbose=1))
         return callbacks
 

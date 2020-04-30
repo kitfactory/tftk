@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tftk
+from tftk.optimizer.tensorflow_adabound import AdaBoundOptimizer
 
 class OptimizerBuilder():
 
@@ -26,7 +27,7 @@ class OptimizerBuilder():
             momentum = kwargs.get("sgd_momentum", 0.0)
             nesterov = kwargs.get("sgd_nestrov" , False)
             print("learning_rate",learning_rate,"momentum",momentum,"nestrov",nesterov)
-            ret = tf.keras.optimizers.SGD(learning_rate=learning_rate,momentum=momentum,nestrov=nesterov)
+            ret = tf.keras.optimizers.SGD(learning_rate=learning_rate,momentum=momentum,nesterov=nesterov)
         elif name == "adadelta":
             # lr=1.0, rho=0.95, epsilon=None, decay=0.0
             lr = kwargs.get("lr", 1.0)
@@ -35,6 +36,12 @@ class OptimizerBuilder():
             decay = kwargs.get("adadelta_decay",0.0)
             print("lr",lr,"rho", rho , "epsiloon", epsilon, "decay",decay)
             ret = tf.keras.optimizers.Adadelta(lr=lr,rho=rho,epsilon=epsilon,decay=decay)
+        elif name =='rmsprop':
+            lr = kwargs.get("lr", 0.001)
+            ret = tf.keras.optimizers.RMSprop(lr=lr)
+        elif name =='adabound':
+            lr = kwargs.get("lr", 0.001)
+            ret = AdaBoundOptimizer(learning_rate=lr,final_lr=1e-7)
         
         if tftk.IS_MIXED_PRECISION() == True:
             ret = tf.keras.mixed_precision.experimental.LossScaleOptimizer(ret, loss_scale='dynamic')       
