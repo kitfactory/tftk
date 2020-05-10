@@ -1,6 +1,5 @@
 import tensorflow as tf
 import tftk
-from tftk.optimizer.tensorflow_adabound import AdaBoundOptimizer
 
 class OptimizerBuilder():
 
@@ -36,12 +35,16 @@ class OptimizerBuilder():
             decay = kwargs.get("adadelta_decay",0.0)
             print("lr",lr,"rho", rho , "epsiloon", epsilon, "decay",decay)
             ret = tf.keras.optimizers.Adadelta(lr=lr,rho=rho,epsilon=epsilon,decay=decay)
+        elif name=="adam":
+            # learning_rate = kwargs.get("lr",0.001)
+            # beta_1 = kwargs.get("beta_1",0.9)
+            # beta_2 = kwargs.get("beta_2",0.999)
+            # epsilon = kwargs.get("epsilon",1e-8)
+            # ret = tf.keras.optimizers.Adam(learning_rate=learning_rate,beta_1=beta_1,beta_2=beta_2,epsilon=epsilon)
+            ret = tf.keras.optimizers.Adam()
         elif name =='rmsprop':
             lr = kwargs.get("lr", 0.001)
             ret = tf.keras.optimizers.RMSprop(lr=lr)
-        elif name =='adabound':
-            lr = kwargs.get("lr", 0.001)
-            ret = AdaBoundOptimizer(learning_rate=lr,final_lr=1e-7)
         
         if tftk.IS_MIXED_PRECISION() == True:
             ret = tf.keras.mixed_precision.experimental.LossScaleOptimizer(ret, loss_scale='dynamic')       

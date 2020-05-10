@@ -21,7 +21,6 @@ class Mish(tf.keras.layers.Activation):
         super(Mish, self).__init__(activation, **kwargs)
         self.__name__ = 'Mish'
 
-
 def mish(inputs):
     return inputs * tf.math.tanh(tf.math.softplus(inputs))
 

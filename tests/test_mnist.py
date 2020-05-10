@@ -31,60 +31,30 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 import tftk
-from tftk.image.dataset import Place365Small
-from tftk.image.dataset import RockPaperScissors
-from tftk.image.dataset import CatsVsDogs
+from tftk.image.dataset import Mnist
 from tftk.image.dataset import ImageDatasetUtil
-# from tftk.image.model.classify import ResNet50
-# from tftk.image.model.classify import MobileNetV2
 from tftk.image.model.classification import SimpleClassificationModel
-from tftk.image.dataset import ImageLabelFolderDataset
-from tftk.image.model.small_resnet_keras_contrib import ResNet18
-from tftk.image.model import ResNetD18
 from tftk.image.train import Trainer
-from tftk.image.augument import ImageAugument
 from tftk.callback import CallbackBuilder
 from tftk.optimizer import OptimizerBuilder
 
-# from tftk.model.image.base import ResNet50
-# from tftk.model.image.base import MobileNetV2
-
 if __name__ == '__main__':
 
-    # dataset, len = Food1o1.get_train_dataset()
-    # ImageCrawler.crawl_keywords_save_folder(name="animals",keywords=["ライオン","ゾウ","キリン","ネコ","イヌ","コウテイペンギン","ジェンツーペンギン","ワラビー","チーター","ピューマ"], base_dir="tmp",max_num=3000,train_ratio=0.8)
-    # ImageCrawler.crawl_keywords_save_folder(name="nintendo",keywords=["とたけけ","たぬきち","ゼルダ","マリオ","ピカチュウ","ヒトカゲ","ヨッシー","クラウド","ティファ"], base_dir="tmp",max_num=3000,train_ratio=0.8)
-    #  (train,train_len),(validation,validation_len)=ImageDatasetUtil.devide_train_validation(dataset,len,0.9)
+    BATCH_SIZE = 100
+    CLASS_NUM = 10
+    IMAGE_SIZE = 28
+    EPOCHS = 2
+    SHUFFLE_SIZE = 1000
 
-    # dataset, len = PatchCamelyon.get_train_dataset()
-    # train,train_len = ImageLabelFolderDataset.get_train_dataset(name='animals',manual_dir='tmp')
-    # validation, validation_len = ImageLabelFolderDataset.get_test_dataset(name='animals', manual_dir='tmp')
+    train, train_len = Mnist.get_train_dataset()
+    validation, validation_len = Mnist.get_test_dataset()
 
-
-    tftk.USE_MIXED_PRECISION()
-    BATCH_SIZE = 10
-
-    # BATCH_SIZE = 48
-    CLASS_NUM = 2
-    IMAGE_SIZE = 150
-    EPOCHS = 100
-
-    train, train_len = ImageLabelFolderDataset.get_train_dataset(name="dogs-vs-cats", manual_dir="tmp")
-    validation, validation_len = ImageLabelFolderDataset.get_validation_dataset(name="dogs-vs-cats", manual_dir="tmp")
-
-    # dataset,dataset_len = CatsVsDogs.get_train_dataset()
-    # dataset = dataset.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE))
-    # (train, train_len), (validation, validation_len) = ImageDatasetUtil.devide_train_validation(dataset,dataset_len,0.90)
-
-    train = train.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageAugument.randaugment_map(1,2))
-    train = train.map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE).apply(ImageAugument.mixup_apply(200,0.1))
-    validation = validation.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE)
-
+    train = train.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
+    validation = validation.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
     optimizer = OptimizerBuilder.get_optimizer(name="rmsprop")
-    model = ResNetD18.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,3),classes=CLASS_NUM,resnest=True,resnet_c=True,resnet_d=True,mish=True)
-    # model = SimpleClassificationModel.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,3),classes=CLASS_NUM)
-    callbacks = CallbackBuilder.get_callbacks(base_dir = "tmp" , tensorboard=True, save_weights=True, consine_annealing=False, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.25,early_stopping_patience=8)
-    Trainer.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=1000,model=model,callbacks=callbacks,optimizer=optimizer,loss="binary_crossentropy",max_epoch=EPOCHS)
+    model = SimpleClassificationModel.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,1),classes=CLASS_NUM)
+    callbacks = CallbackBuilder.get_callbacks(base_dir = "tmp" , tensorboard=True, profile_batch="50,60" ,save_weights=True, consine_annealing=False, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.25,early_stopping_patience=16)
+    Trainer.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="binary_crossentropy",max_epoch=EPOCHS)
     
     """
     train, train_len = RockPaperScissors.get_train_dataset()

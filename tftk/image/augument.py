@@ -102,7 +102,7 @@ class ImageAugument():
         return cutout
 
     @classmethod
-    def _cutout(cls,image, pad_size, replace=0):
+    def cutout(cls,image, pad_size, replace=0):
         """Apply cutout (https://arxiv.org/abs/1708.04552) to image.
         This operation applies a (2*pad_size x 2*pad_size) mask of zeros to
         a random location within `img`. The pixel values filled in will be of the
@@ -151,14 +151,14 @@ class ImageAugument():
 
 
     @classmethod 
-    def _solarize(cls, image, threshold=128):
+    def solarize(cls, image, threshold=128):
         # For each pixel in the image, select the pixel
         # if the value is less than the threshold.
         # Otherwise, subtract 255 from the pixel.
         return tf.where(image < threshold, image, 255 - image)
 
     @classmethod
-    def _solarize_add(cls, image, additionimage, addition=0, threshold=128):
+    def solarize_add(cls, image, additionimage, addition=0, threshold=128):
         # For each pixel in the image less than threshold
         # we add 'addition' amount to it and then clip the
         # pixel value to be between 0 and 255. The value
@@ -168,13 +168,13 @@ class ImageAugument():
         return tf.where(image < threshold, added_image, image)
 
     @classmethod
-    def _color(cls, image, factor):
+    def color(cls, image, factor):
         """Equivalent of PIL Color."""
         degenerate = tf.image.grayscale_to_rgb(tf.image.rgb_to_grayscale(image))
         return cls._blend(degenerate, image, factor)
     
     @classmethod
-    def _contrast(cls, image, factor):
+    def contrast(cls, image, factor):
         """Equivalent of PIL Contrast."""
         degenerate = tf.image.rgb_to_grayscale(image)
         # Cast before calling tf.histogram.
@@ -191,19 +191,19 @@ class ImageAugument():
         return cls._blend(degenerate, image, factor)
 
     @classmethod
-    def _brightness(cls, image, factor):
+    def brightness(cls, image, factor):
         """Equivalent of PIL Brightness."""
         degenerate = tf.zeros_like(image)
         return cls._blend(degenerate, image, factor)
 
     @classmethod
-    def _posterize(cls, image, bits):
+    def posterize(cls, image, bits):
         """Equivalent of PIL Posterize."""
         shift = 8 - bits
         return tf.bitwise.left_shift(tf.bitwise.right_shift(image, shift), shift)
     
     @classmethod
-    def _rotate(cls, image, degrees):
+    def rotate(cls, image, degrees):
         """Rotates the image by degrees either clockwise or counterclockwise.
         Args:
             image: An image Tensor of type uint8.
@@ -214,31 +214,29 @@ class ImageAugument():
             The rotated version of image.
         """
         # Convert from degrees to radians.
+        print(image)
         degrees_to_radians = math.pi / 180.0
         radians = degrees * degrees_to_radians
 
-        # In practice, we should randomize the rotation degrees by flipping
-        # it negatively half the time, but that's done on 'degrees' outside
-        # of the function.
-        rotate_image = tfa.image.rotate(image, radians)
+        rotate_image = tfa.image.rotate(image, radians,name="rotate")
         # image = contrib_image.rotate(_warp(image), radians)
         return rotate_image
 
     @classmethod
-    def _translate_x(cls, image, pixels, replace=[128,128,128]):
+    def translate_x(cls, image, pixels, replace=[128,128,128]):
         """Equivalent of PIL Translate in X dimension."""
         image = tfa.image.translate(image,[-pixels,0])
         # image = contrib_image.translate(_warp(image), [-pixels, 0])
         return image # un_warp(image, replace)
 
     @classmethod
-    def _translate_y(cls, image, pixels, replace=[128,128,128]):
+    def translate_y(cls, image, pixels, replace=[128,128,128]):
         """Equivalent of PIL Translate in Y dimension."""
         image = tfa.image.translate(image,[0,-pixels])
         return image
 
     @classmethod
-    def _shear_x(cls, image, level, replace=[128,128,128]):
+    def shear_x(cls, image, level, replace=[128,128,128]):
         """Equivalent of PIL Shearing in X dimension."""
         # Shear parallel to x axis is a projective transform
         # # with a matrix form of:
@@ -249,7 +247,7 @@ class ImageAugument():
         return image
 
     @classmethod
-    def _shear_y(cls, image, level, replace=[128,128,128]):
+    def shear_y(cls, image, level, replace=[128,128,128]):
         """Equivalent of PIL Shearing in Y dimension."""
         # Shear parallel to y axis is a projective transform
         # with a matrix form of:
@@ -260,7 +258,7 @@ class ImageAugument():
         return image
 
     @classmethod
-    def _autocontrast(cls, image):
+    def autocontrast(cls, image):
         """Implements Autocontrast function from PIL using TF ops.
             Args:
                 image: A 3D uint8 tensor.
@@ -273,6 +271,7 @@ class ImageAugument():
             # A possibly cheaper version can be done using cumsum/unique_with_counts
             # over the histogram values, rather than iterating over the entire image.
             # to compute mins and maxes.
+
             lo = tf.cast(tf.reduce_min(image),tf.float32)
             hi = tf.cast(tf.reduce_max(image),tf.float32)
 
@@ -296,7 +295,7 @@ class ImageAugument():
         return image
 
     @classmethod
-    def _sharpness(cls, image, factor):
+    def sharpness(cls, image, factor):
         """Implements Sharpness function from PIL using TF ops."""
         orig_image = image
         image = tf.cast(image, tf.float32)
@@ -325,7 +324,7 @@ class ImageAugument():
         return cls._blend(result, orig_image, factor)
 
     @classmethod
-    def _equalize(cls, image):
+    def equalize(cls, image):
         """Implements Equalize function from PIL using TF ops."""
         def scale_channel(im, c):
             """Scale the data in the channel to implement equalize."""
@@ -366,7 +365,7 @@ class ImageAugument():
         return image
 
     @classmethod
-    def _invert(cls, image):
+    def invert(cls, image):
         """Inverts the image pixels."""
         image = tf.convert_to_tensor(image)
         return 255 - image
@@ -465,24 +464,24 @@ class ImageAugument():
             ret = tf.switch_case(
                 op_to_select,
                 branch_fns={
-                    0: lambda: cls._autocontrast(data["image"]),
-                    1: lambda: cls._equalize(data["image"]),
-                    2: lambda: cls._invert(data["image"]),
-                    3: lambda: cls._rotate(data["image"], *(cls._rotate_level_to_arg(level))),
-                    4: lambda: cls._posterize(data["image"] , int((level/cls._MAX_LEVEL)*4)),
-                    5: lambda: cls._solarize(data["image"], int((level/cls._MAX_LEVEL)* 256)),
-                    6: lambda: cls._solarize_add(data["image"],int((level/cls._MAX_LEVEL)* 110)),
-                    7: lambda: cls._color(data["image"],*(cls._enhance_level_to_arg(level))),
-                    8: lambda: cls._contrast(data["image"],*(cls._enhance_level_to_arg(level))),
-                    9: lambda: cls._brightness(data["image"], *(cls._enhance_level_to_arg(level))),
-                    10: lambda: cls._sharpness(data["image"], *(cls._enhance_level_to_arg(level))),
-                    11: lambda: cls._shear_x(data["image"] , *(cls._shear_level_to_arg(level))),
-                    12: lambda: cls._shear_y(data["image"] , *(cls._shear_level_to_arg(level))),
-                    13: lambda: cls._translate_x(data["image"], *(cls._translate_level_to_arg(level, translate_const))),
-                    14: lambda: cls._translate_y(data["image"], *(cls._translate_level_to_arg(level, translate_const))),
-                    15: lambda: cls._cutout(data["image"], int((level/cls._MAX_LEVEL) * cutout_const)),
+                    0: lambda: cls.autocontrast(data["image"]),
+                    1: lambda: cls.equalize(data["image"]),
+                    2: lambda: cls.invert(data["image"]),
+                    3: lambda: cls.rotate(data["image"], *(cls._rotate_level_to_arg(level))),
+                    4: lambda: cls.posterize(data["image"] , int((level/cls._MAX_LEVEL)*4)),
+                    5: lambda: cls.solarize(data["image"], int((level/cls._MAX_LEVEL)* 256)),
+                    6: lambda: cls.solarize_add(data["image"],int((level/cls._MAX_LEVEL)* 110)),
+                    7: lambda: cls.color(data["image"],*(cls._enhance_level_to_arg(level))),
+                    8: lambda: cls.contrast(data["image"],*(cls._enhance_level_to_arg(level))),
+                    9: lambda: cls.brightness(data["image"], *(cls._enhance_level_to_arg(level))),
+                    10: lambda: cls.sharpness(data["image"], *(cls._enhance_level_to_arg(level))),
+                    11: lambda: cls.shear_x(data["image"] , *(cls._shear_level_to_arg(level))),
+                    12: lambda: cls.shear_y(data["image"] , *(cls._shear_level_to_arg(level))),
+                    13: lambda: cls.translate_x(data["image"], *(cls._translate_level_to_arg(level, translate_const))),
+                    14: lambda: cls.translate_y(data["image"], *(cls._translate_level_to_arg(level, translate_const))),
+                    15: lambda: cls.cutout(data["image"], int((level/cls._MAX_LEVEL) * cutout_const)),
                 },
-                default= lambda: cls._autocontrast(data["image"], *())
+                default= lambda: cls.autocontrast(data["image"], *())
             )
             return ret
 

@@ -1,21 +1,23 @@
 [tool.poetry]
 name = "tftk"
-version = "0.1.0"
-description = "TensorFlow Toolkit"
+version = "0.1.1"
+description = "Machine Learning Toolkit using TensorFlow"
 authors = ["Naruhide KITADA <kitfactory@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-tensorflow = "^2.1.0"
 gym = "^0.17.1"
 optuna = "^1.2.0"
-tensorflow_datasets = "^2.1.0"
 pillow = "^7.0.0"
 tensorflow_probability = "^0.9.0"
-tensorflow_addons = "^0.8.3"
-tensorflow-estimator = "2.1.0"
 icrawler = "^0.6.2"
+graphviz = "^0.14"
+pydot-ng = "^2.0.0"
+tensorboard_plugin_profile = "^2.2.0"
+tensorflow_datasets = "^3.1.0"
+tensorflow = "^2.2.0"
+tfa-nightly = "^0.10.0-alpha.20200509080841"
 
 [tool.poetry.dev-dependencies]
 

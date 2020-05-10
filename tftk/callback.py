@@ -66,11 +66,12 @@ class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
 
 class CallbackBuilder():
     @classmethod
-    def get_callbacks(cls, base_dir:str=".\\tmp", tensorboard:bool=True, save_weights:bool=True, monitor="val_acc", consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0):
+    def get_callbacks(cls, base_dir:str=".\\tmp", tensorboard:bool=True, profile_batch:str=None, save_weights:bool=True, monitor="val_acc", consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0):
         """よく利用するコールバックを設定します。
         
         Keyword Arguments:
             tensorboard_log_dir {str} -- tensorboardログを出力します。Noneの場合、出力しません。 (default: {None})
+            profile_batch{str} -- プロファイルを行う際の開始バッチ、終了バッチを指定します。Noneの場合実行しません。
             save_weights {str} -- モデルを保存します。 (default: {"./tmp/model.hdf5"})
             monitor {str} -- [description] (default: {"val_acc"})
             max_epoch
@@ -93,7 +94,11 @@ class CallbackBuilder():
         if tensorboard is True:
             print("Callback-TensorBoard")
             tensorboard_log_dir = base_dir + os.path.sep + str(max_num) + os.path.sep + "log"
-            callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir))
+            if profile_batch != None:
+                callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir,profile_batch=profile_batch,histogram_freq=1))
+            else:
+                callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir))
+
         if save_weights is True:
             print("Callback-ModelCheckPoint")
             save_path = base_dir + os.path.sep + str(max_num) + os.path.sep + "model.hdf5"
