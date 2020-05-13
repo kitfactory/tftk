@@ -97,9 +97,12 @@ class ClassificationModel():
         input = base_model.input
         last = base_model.output
 
-        x = tf.keras.layers.Flatten(name='classify-1')(last)
-        x = tf.keras.layers.Dense(512, kernel_initializer='he_normal')(x)
-        x = tf.keras.layers.Activation('relu')(x)
+
+        x = tf.keras.layers.GlobalAveragePooling2D()(last)
+        
+        # x = tf.keras.layers.Flatten(name='classify-1')(last)
+        # x = tf.keras.layers.Dense(512, kernel_initializer='he_normal')(x)
+        # x = tf.keras.layers.Activation('relu')(x)
 
         if classes != 2:
             x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)

@@ -11,6 +11,7 @@ from . efficientnet import KerasEfficientNetB4
 from . efficientnet import KerasEfficientNetB5
 from . efficientnet import KerasEfficientNetB6
 from . efficientnet import KerasEfficientNetB7
+from . efficientnet import EfficientNetB0
 
 # from . efficientnet import KerasEfficientNetB1
 # from . efficientnet import KerasEfficientNetB2
@@ -36,7 +37,8 @@ __all__ = [
     'KerasEfficientNetB7',
     'ResNet18',
     'ResNet34',
-    'ResNet50'
+    'ResNet50',
+    'EfficientNetB0'
 ]
 
 """
