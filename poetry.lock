@@ -816,6 +816,17 @@ version = ">=0.26"
 
 [[package]]
 category = "main"
+description = "TensorFlow Addons."
+name = "tensorflow-addons"
+optional = false
+python-versions = "*"
+version = "0.10.0"
+
+[package.dependencies]
+typeguard = ">=2.7"
+
+[[package]]
+category = "main"
 description = "tensorflow/datasets is a library of datasets ready to use with TensorFlow."
 name = "tensorflow-datasets"
 optional = false
@@ -910,17 +921,6 @@ version = "1.1.0"
 
 [[package]]
 category = "main"
-description = "TensorFlow Addons."
-name = "tfa-nightly"
-optional = false
-python-versions = "*"
-version = "0.10.0.dev20200509080841"
-
-[package.dependencies]
-typeguard = ">=2.7"
-
-[[package]]
-category = "main"
 description = "Fast, Extensible Progress Meter"
 name = "tqdm"
 optional = false
@@ -1009,7 +1009,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "a65799f504bab883f4b6b20855b3d86da0956d769ef0b3b90ca3a7ce75db2b4f"
+content-hash = "ef7a54f2c190339eed2b2bcbbac22d2d24a82e58a6db9ca56d36f5e7b6603ef9"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1502,6 +1502,20 @@ tensorflow = [
     {file = "tensorflow-2.2.0-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:8f364528f70d895b96a0de36c7c6002644bf4c5df1ee3fbfa775f5cee6571ad7"},
     {file = "tensorflow-2.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:784ab8217e4b0eb4d121c28430c6cdc2ce56c02634a9720d84fb30598b338b8c"},
 ]
+tensorflow-addons = [
+    {file = "tensorflow_addons-0.10.0-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:8dae39a84dcd5eeb0889ebaed86158bd2904c7dde9d5873598712fa12993095c"},
+    {file = "tensorflow_addons-0.10.0-cp35-cp35m-manylinux2010_x86_64.whl", hash = "sha256:8a607414f54248d6bfbfdd2afdc8d1ac2619d5caa37013c0302775b170024524"},
+    {file = "tensorflow_addons-0.10.0-cp35-cp35m-win_amd64.whl", hash = "sha256:0353c10ab3dd332d3c4f9474b0102bc9f277fc0748d9c7a249a77dca8680b881"},
+    {file = "tensorflow_addons-0.10.0-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:91a3fd625c4550e08c952ca03cc0181362a66a916f8f55631c07a10e8c1d5076"},
+    {file = "tensorflow_addons-0.10.0-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:48e58343daa94f62b31bf5f418b5f1f3f7123c7b373ddc085e1574ea1299263e"},
+    {file = "tensorflow_addons-0.10.0-cp36-cp36m-win_amd64.whl", hash = "sha256:83c452a0ab8a91695837a9380218eca7de0cda0e700ca3c48b5c39b16841f61b"},
+    {file = "tensorflow_addons-0.10.0-cp37-cp37m-macosx_10_13_x86_64.whl", hash = "sha256:c1379b7eacd2ab254b3e5c5041d6e10caa2e373b86451de800c7dab77595e8b7"},
+    {file = "tensorflow_addons-0.10.0-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:c070d28a45ca09d323f2052d83bfab97f9186b6e59191016a8dd5f2547d486a3"},
+    {file = "tensorflow_addons-0.10.0-cp37-cp37m-win_amd64.whl", hash = "sha256:16a4184f42399843ffcad23ca96b9d256a3e0a5f2d3e76c7ceecff5bad6e1c1c"},
+    {file = "tensorflow_addons-0.10.0-cp38-cp38-macosx_10_13_x86_64.whl", hash = "sha256:e185716992fe0d2af6d5826042834b85feda4e4887ad1e29fddf5c9640c38da0"},
+    {file = "tensorflow_addons-0.10.0-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:08034ad2c177038990afc6aef9e7a90546f2872f3a39c4f966d2561346a749ab"},
+    {file = "tensorflow_addons-0.10.0-cp38-cp38-win_amd64.whl", hash = "sha256:d5df84bcd4fbd7006cb2602c96b4a736a46a8667b4179e82a843a159d5802eab"},
+]
 tensorflow-datasets = [
     {file = "tensorflow-datasets-3.1.0.tar.gz", hash = "sha256:e59ca00b6307a6c9ba5a940f48172eac839db397405674aea92aa887ae42ddc7"},
     {file = "tensorflow_datasets-3.1.0-py3-none-any.whl", hash = "sha256:ed347054cc75fd47009b08d72b4fd4f8c97dfcf45fa5a727def68e3cd403b324"},
@@ -1517,20 +1531,6 @@ tensorflow-probability = [
 ]
 termcolor = [
     {file = "termcolor-1.1.0.tar.gz", hash = "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"},
-]
-tfa-nightly = [
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:9b97dcdba66178da34e63fe922b3cffd30c5afe654ac38b2fd0bdb501b8aa13f"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp35-cp35m-manylinux2010_x86_64.whl", hash = "sha256:5d601b35ddd53e5a479cb8f66cdd9ede5489579a07520ddafc9611bbeca95667"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp35-cp35m-win_amd64.whl", hash = "sha256:4aaa6e21a739ac795175a02fce780cc1578db0f4d19898693d9ab0ecdb8a0e4e"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:389f08ada5622c9f29f21c530d95345a7cd81696874349962fa3d13fab4ac7e2"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:8e5cac69ae687e88f8b56320340c40282e5e77d86898899544fb615b1a7b0133"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp36-cp36m-win_amd64.whl", hash = "sha256:61d67d0cadb947b6aa5836c1f233b527463433d17f85b4f0ce363cb2230263a0"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp37-cp37m-macosx_10_13_x86_64.whl", hash = "sha256:fee70ddd5b4932afaacef5786322eec9d69cfb425fa011ac006ecc6ead88a4cc"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:a5dc5680b333876b4647e9a21304e7326dde89fb6b9252de1da512280a927809"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp37-cp37m-win_amd64.whl", hash = "sha256:0e7c20bbf688c4aa0786520bcfd94672e3445ac6fc5d8bd886477eff9fd79ee7"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp38-cp38-macosx_10_13_x86_64.whl", hash = "sha256:e0da6eb72c386d52dbe85b7bce84271a5c3f92a81b94f6ac2eeded2e54bb2960"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:bb3233bd61465c2e696d392197c55cdba03c8115f0364cb9890fa9014a5a521a"},
-    {file = "tfa_nightly-0.10.0.dev20200509080841-cp38-cp38-win_amd64.whl", hash = "sha256:951c5129baaee85b9b5196364aaa1b6c582ad1260fd4a6503a3b598e7f2b55e5"},
 ]
 tqdm = [
     {file = "tqdm-4.43.0-py2.py3-none-any.whl", hash = "sha256:0d8b5afb66e23d80433102e9bd8b5c8b65d34c2a2255b2de58d97bd2ea8170fd"},

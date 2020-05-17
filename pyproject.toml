@@ -17,7 +17,7 @@ pydot-ng = "^2.0.0"
 tensorboard_plugin_profile = "^2.2.0"
 tensorflow_datasets = "^3.1.0"
 tensorflow = "^2.2.0"
-tfa-nightly = "^0.10.0-alpha.20200509080841"
+tensorflow_addons = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
 
