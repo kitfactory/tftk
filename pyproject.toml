@@ -6,7 +6,7 @@ authors = ["Naruhide KITADA <kitfactory@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 gym = "^0.17.1"
 optuna = "^1.2.0"
 pillow = "^7.0.0"
