@@ -2,6 +2,7 @@ from typing import List
 import tensorflow as tf
 
 from tftk.image.dataset import ImageDatasetUtil
+from tftk import IS_SUSPEND_RESUME_TRAIN, ResumeExecutor
 
 class ImageTrain():
 
@@ -18,7 +19,7 @@ class ImageTrain():
         callbacks:List[tf.keras.callbacks.Callback],
         optimizer:tf.keras.optimizers.Optimizer,
         loss:tf.keras.losses.Loss,
-        max_epoch:int = 5):
+        max_epoch:int = 5, resume:bool = True):
 
         # dataset = dataset.shuffle(1024).batch(32).prefetch(tf.data.experimental.AUTOTUNE)
 
@@ -36,6 +37,19 @@ class ImageTrain():
 
         model.summary()
 
+        initial_epoch = 0
+        exe = ResumeExecutor.get_instance()
+
+        if exe.is_resumable_training()==True:
+            print("This is resume training!!")
+            exe.resume_model(model)
+            resume_val = exe.resume_values()
+            initial_epoch, _, _  = resume_val
+            initial_epoch = initial_epoch + 1
+            print("resume epoch", initial_epoch, "max_epoch", max_epoch)
+        else:
+            print("Not resume training")
+
         """
         optimizer='rmsprop', loss=None, metrics=None, loss_weights=None,
         sample_weight_mode=None, weighted_metrics=None, target_tensors=None,
@@ -49,7 +63,7 @@ class ImageTrain():
             validation_data=validation_data,
             steps_per_epoch=steps_per_epoch,
             validation_steps=validation_steps,
-            epochs=max_epoch)
+            epochs=max_epoch, initial_epoch=initial_epoch)
 
 """
 fit(

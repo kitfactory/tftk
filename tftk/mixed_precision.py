@@ -1,16 +1,19 @@
 import tensorflow as tf
 
+from . context import Context
+
 mixed_precision = False
 
+
 def USE_MIXED_PRECISION():
-    mixed_precision = True
+    Context.get_instance()[Context.MIXED_PRECISION]=True
     policy = tf.keras.mixed_precision.experimental.Policy('mixed_float16')
     tf.keras.mixed_precision.experimental.set_policy(policy)
 
 def IS_MIXED_PRECISION()->bool:
     policy = tf.keras.mixed_precision.experimental.global_policy()
-    print(policy)
-    return mixed_precision
+    context = Context.get_instance()
+    return context[Context.MIXED_PRECISION]
 
 """
 --- ポリシーの設定

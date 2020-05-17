@@ -31,8 +31,6 @@ class Trainer():
         validation_data = validation_data.repeat().batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
         model.compile(optimizer=optimizer, loss=loss, metrics=["acc"])
-
-
         model.summary()
 
         """
