@@ -3,6 +3,7 @@ import tensorflow as tf
 
 from tftk.image.dataset import ImageDatasetUtil
 from tftk import IS_SUSPEND_RESUME_TRAIN, ResumeExecutor
+from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 
 class ImageTrain():
 
@@ -40,15 +41,25 @@ class ImageTrain():
         initial_epoch = 0
         exe = ResumeExecutor.get_instance()
 
+        if IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE():
+            print("colab training with google drive")
+            Colaboratory.copy_resume_data_from_google_drive()
+        else:
+            print("google drive is not found.")
+
         if exe.is_resumable_training()==True:
             print("This is resume training!!")
             exe.resume_model(model)
             resume_val = exe.resume_values()
-            initial_epoch, _, _  = resume_val
+            initial_epoch, _, _,_  = resume_val
             initial_epoch = initial_epoch + 1
             print("resume epoch", initial_epoch, "max_epoch", max_epoch)
         else:
-            print("Not resume training")
+            if exe.is_train_ended()==True:
+                print("Training is completed.")
+                exit()
+            else:
+                print("Not resume training")
 
         """
         optimizer='rmsprop', loss=None, metrics=None, loss_weights=None,

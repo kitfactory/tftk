@@ -7,6 +7,8 @@ import sys
 from tftk import ResumeExecutor
 from tftk import Context
 from tftk import IS_SUSPEND_RESUME_TRAIN
+from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE
+from tftk import Colaboratory
 
 class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
     """Cosine annealing scheduler.
@@ -93,7 +95,8 @@ class SuspendCallback(tf.keras.callbacks.Callback):
             exe = ResumeExecutor.get_instance()
             if exe.is_resumable_training():
                 resume = exe.resume_values()
-                e,l,_ = resume
+                e,l,b,_ = resume
+                self.best_value = b
                 self.model.optimizer.lr = l
                 # print("Suspend Call Resume LR",l)
 
@@ -102,27 +105,26 @@ class SuspendCallback(tf.keras.callbacks.Callback):
 
     def set_model(self, model):
         self.model:tf.kearas.Model = model
-
+            
     def on_epoch_end(self, epoch, logs=None):
         if logs == None:
             return
         
         value = logs[self.monitor]
         lr = logs["lr"]
-        # print("\n suspend on epoch end!!",epoch)
+        print("\n suspend on epoch end!!",epoch)
         
         exe = ResumeExecutor.get_instance()
         if self.monitor == "val_loss" or self.monitor == "loss":
             # print("\n monitor val_loss",self.best_value,",",value)
             if self.best_value > value:
                 self.best_value = value
-                exe.suspend(epoch,lr,self.model)
+                exe.suspend(epoch,lr,self.best_value,self.model)
         else:
             if self.best_value < value:
                 self.best_value = value
-                exe.suspend(epoch,lr,self.model)
-        
-
+                exe.suspend(epoch,lr,self.best_value,self.model)
+            
     def on_train_end(self, epoch:int, logs=None):
         exe = ResumeExecutor.get_instance()
         exe.training_completed()

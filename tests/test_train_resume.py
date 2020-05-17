@@ -33,14 +33,16 @@ if __name__ == '__main__':
 
     """
 
-
     BATCH_SIZE = 500
     CLASS_NUM = 10
     IMAGE_SIZE = 28
-    EPOCHS = 10
+    EPOCHS = 3
     SHUFFLE_SIZE = 1000
     BASEDIR = "./tmp"
     TRAIN_NAME = "resume_test"
+
+    # if IS_SUSPEND_RESUME_TRAIN() == True and IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE()== True:
+    
 
     train, train_len = Mnist.get_train_dataset()
     validation, validation_len = Mnist.get_test_dataset()

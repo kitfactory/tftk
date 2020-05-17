@@ -5,6 +5,7 @@ from . resume import ENABLE_SUSPEND_RESUME_TRAIN
 from . resume import IS_SUSPEND_RESUME_TRAIN
 from . resume import ResumeExecutor
 from . context import Context
+from . colab import Colaboratory, IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE
 
 __all__ = [
     'USE_MIXED_PRECISION', 
