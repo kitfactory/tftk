@@ -46,6 +46,9 @@ class ResumeExecutor():
         return ret
 
     def is_train_ended(self)->bool:
+        context = Context.get_instance()
+        if context[Context.SUSPEND_RESUME] == False:
+            return False
         if tf.io.gfile.exists(self.path) == True:
             _, _, _, end =self._load_values()
             return end
@@ -53,6 +56,10 @@ class ResumeExecutor():
             return False
     
     def is_resumable_training(self)->bool:
+        context = Context.get_instance()
+        if context[Context.SUSPEND_RESUME] == False:
+            return False
+
         if tf.io.gfile.exists(self._get_model_path()):
             return not self.is_train_ended()
         else:
