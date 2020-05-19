@@ -33,7 +33,8 @@ class ResumeExecutor():
         return cls.instance
     
     def _load_values(self)->(int,float,bool):
-        f = tf.io.gfile.GFile(self._get_resume_path(),mode="r")
+        rp = self._get_resume_path()
+        f = tf.io.gfile.GFile(rp,mode="r")
         s = f.read()
         splited = s.split(",")
         epoch = int(splited[0])
@@ -49,7 +50,7 @@ class ResumeExecutor():
         context = Context.get_instance()
         if context[Context.SUSPEND_RESUME] == False:
             return False
-        if tf.io.gfile.exists(self.path) == True:
+        if tf.io.gfile.exists(self._get_model_path()) == True:
             _, _, _, end =self._load_values()
             return end
         else:

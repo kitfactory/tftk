@@ -126,8 +126,10 @@ class SuspendCallback(tf.keras.callbacks.Callback):
                 exe.suspend(epoch,lr,self.best_value,self.model)
             
     def on_train_end(self, epoch:int, logs=None):
-        exe = ResumeExecutor.get_instance()
-        exe.training_completed()
+        context = Context.get_instance()
+        if context[Context.TRAINING_NO_EPOCH_LIMIT] == False:
+            exe = ResumeExecutor.get_instance()
+            exe.training_completed()
 
 
 class CallbackBuilder():
