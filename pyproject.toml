@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tftk"
-version = "0.1.4"
+version = "0.1.5"
 description = "Machine Learning Toolkit using TensorFlow"
 authors = ["Naruhide KITADA <kitfactory@gmail.com>"]
 license = "MIT"

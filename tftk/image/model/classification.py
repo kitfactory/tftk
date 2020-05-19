@@ -41,6 +41,7 @@ class SimpleClassificationModel(AbstractClassificationModel):
         x = tf.keras.layers.Conv2D(filters=128,kernel_size=(3,3),padding="same")(x) 
         x = tf.keras.layers.Activation('relu')(x)
         x = tf.keras.layers.MaxPool2D((2,2))(x)
+        x = tf.keras.layers.GlobalAveragePooling2D()(x)
         model = tf.keras.Model(inputs=inputs,outputs=x)
         return model
 
@@ -97,18 +98,11 @@ class ClassificationModel():
         input = base_model.input
         last = base_model.output
 
-
-        x = tf.keras.layers.GlobalAveragePooling2D()(last)
-        
-        # x = tf.keras.layers.Flatten(name='classify-1')(last)
-        # x = tf.keras.layers.Dense(512, kernel_initializer='he_normal')(x)
-        # x = tf.keras.layers.Activation('relu')(x)
-
         if classes != 2:
-            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)
+            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(last)
             x = tf.keras.layers.Activation('softmax',dtype='float32')(x)
         else:
-            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)
+            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(last)
             x = tf.keras.layers.Activation('sigmoid',dtype='float32')(x)
         return tf.keras.Model(input,x)
 

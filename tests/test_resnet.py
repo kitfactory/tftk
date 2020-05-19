@@ -192,9 +192,3 @@ if __name__ == '__main__':
 
     model = tf.keras.applications.ResNet50V2(input_shape=(224,224,3),include_top=True,classes=10,weights=None)
     model.summary()
-
-    # model = ResNetD18.get_model(input_shape=(224,224,3),resnest=True,mish=False)
-    # tf.keras.utils.plot_model(model,to_file='model.png')
-
-
-    # model.summary()

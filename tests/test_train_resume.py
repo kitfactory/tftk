@@ -18,21 +18,6 @@ if __name__ == '__main__':
 
     ENABLE_SUSPEND_RESUME_TRAIN()
 
-    """
-    resume = ResumeExecutor.get_instance()
-    resume.suspend(3,0.01,None)
-    lv = resume.resume_values(0,0.1)
-    e,l = lv
-    print("e",e, "l",l)
-
-    print("tarin_end?", resume.is_train_ended())
-    print("is_resumable_training?", resume.is_resumable_training())
-    
-    resume.training_completed()
-    print("tarin_end?", resume.is_train_ended())
-
-    """
-
     BATCH_SIZE = 500
     CLASS_NUM = 10
     IMAGE_SIZE = 28
@@ -55,8 +40,3 @@ if __name__ == '__main__':
     callbacks = CallbackBuilder.get_callbacks(tensorboard=False, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.25,early_stopping_patience=16)
     
     ImageTrain.train_image_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=EPOCHS)
-
-    # Trainer.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorycal_crossentropy",max_epoch=EPOCHS)
-
-    """
-    """
