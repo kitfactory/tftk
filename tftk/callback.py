@@ -112,7 +112,6 @@ class SuspendCallback(tf.keras.callbacks.Callback):
         
         value = logs[self.monitor]
         lr = logs["lr"]
-        print("\n suspend on epoch end!!",epoch)
         
         exe = ResumeExecutor.get_instance()
         if self.monitor == "val_loss" or self.monitor == "loss":
@@ -202,7 +201,7 @@ class CallbackBuilder():
             callbacks.append(tf.keras.callbacks.EarlyStopping(patience=early_stopping_patience,verbose=1))
 
         if IS_SUSPEND_RESUME_TRAIN() == True:
-            print("Suspend Callback!!")
+            print("Suspend Resume Callback")
             callbacks.append(SuspendCallback())
 
         return callbacks

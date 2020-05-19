@@ -47,9 +47,9 @@ class Colaboratory():
             print("google drive dirctory not found ", gdrive)
             os.makedirs(gdrive)
         else:
-            print("gdrive found ", gdrive)
+            print("google drive found ", gdrive)
 
-        print("\nbackup suspend data ", colab, gdrive,"\n")
+        print("backup suspend data to google drive.", colab, gdrive,"\n")
         distutils.dir_util.copy_tree(colab,gdrive,verbose=1)
 
             

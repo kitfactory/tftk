@@ -84,7 +84,6 @@ class ResumeExecutor():
         model.load_weights(self._get_model_path())
 
     def suspend(self,epoch,lr,best,model):
-        print("\nSusupend!!!")
         self._check_dir()
         file = self._get_resume_path()
         f = tf.io.gfile.GFile(file, mode="w")
