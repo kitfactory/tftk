@@ -31,12 +31,12 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 import tftk
-from tftk.image.dataset import Food1o1
+from tftk.image.dataset import Food101
 from tftk.image.dataset import ImageDatasetUtil
-from tftk.image.model import KerasEfficientNetB2
+from tftk.image.model import KerasEfficientNetB0
 from tftk.image.model import EfficientNetB0
 
-from tftk.image.train import Trainer
+from tftk.train.image import ImageTrain
 from tftk.image.augument import ImageAugument
 from tftk.callback import CallbackBuilder
 from tftk.optimizer import OptimizerBuilder
@@ -66,8 +66,8 @@ if __name__ == '__main__':
     EPOCHS = 150
     SHUFFLE_SIZE = 1000
 
-    train, train_len = Food1o1.get_train_dataset()
-    validation, validation_len = Food1o1.get_validation_dataset()
+    train, train_len = Food101.get_train_dataset()
+    validation, validation_len = Food101.get_validation_dataset()
 
     train = train.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageAugument.randaugment_map(2,4))
     train = train.map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE).apply(ImageAugument.mixup_apply(200,0.1))
@@ -75,9 +75,9 @@ if __name__ == '__main__':
 
     optimizer = OptimizerBuilder.get_optimizer(name="rmsprop",lr=0.005)
     # model = EfficientNetB0(input_shape=(IMAGE_SIZE,IMAGE_SIZE,CHANNELS),include_top=True,classes=CLASS_NUM,weights=None)
-    model = KerasEfficientNetB2.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,CHANNELS),classes=CLASS_NUM) # resnest=True,resnet_c=True,resnet_d=True,mish=True)
-    callbacks = CallbackBuilder.get_callbacks(base_dir = "tmp" , tensorboard=True, save_weights=True, consine_annealing=False, reduce_lr_on_plateau=True,reduce_patience=6,reduce_factor=0.25,early_stopping_patience=10)
-    Trainer.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=EPOCHS)
+    model = KerasEfficientNetB0.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,CHANNELS),classes=CLASS_NUM,weights="imagenet") # resnest=True,resnet_c=True,resnet_d=True,mish=True)
+    callbacks = CallbackBuilder.get_callbacks(tensorboard=True, consine_annealing=False, reduce_lr_on_plateau=True,reduce_patience=6,reduce_factor=0.25,early_stopping_patience=10)
+    ImageTrain.train_image_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=EPOCHS)
     
     """
     train, train_len = RockPaperScissors.get_train_dataset()

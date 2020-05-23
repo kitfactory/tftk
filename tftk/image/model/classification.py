@@ -51,8 +51,8 @@ class KerasResNet50(AbstractClassificationModel):
         pass
     
     @classmethod
-    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.ResNet50(include_top=False, weights=None, input_shape=input_shape,pooling="avg")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.ResNet50(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
         return model
 
 class KerasResNet50V2(AbstractClassificationModel):
@@ -61,8 +61,8 @@ class KerasResNet50V2(AbstractClassificationModel):
         pass
     
     @classmethod
-    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.ResNet50V2(include_top=False, weights=None, input_shape=input_shape,pooling="avg")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.ResNet50V2(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
         return model
 
 class KerasMobileNetV2(AbstractClassificationModel):
@@ -71,8 +71,8 @@ class KerasMobileNetV2(AbstractClassificationModel):
         pass
     
     @classmethod
-    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.MobileNetV2(include_top=False, weights=None, input_shape=input_shape,pooling="avg")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.MobileNetV2(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
         return model
 
 class KerasEfficentNetB0(AbstractClassificationModel):
@@ -81,8 +81,8 @@ class KerasEfficentNetB0(AbstractClassificationModel):
         pass
     
     @classmethod
-    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.EfficientNetB0(include_top=False, weights=None, input_shape=input_shape, pooling="avg")
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.EfficientNetB0(include_top=False, weights=weights, input_shape=input_shape, pooling="avg")
         return model
 
 

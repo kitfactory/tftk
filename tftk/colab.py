@@ -1,3 +1,9 @@
+"""Colabratory上でのGoogleドライブ利用の処理
+
+Colab<->Googleドライブ間のバックアップの処理を提供する。
+
+"""
+
 import os
 
 import distutils
@@ -15,11 +21,17 @@ def IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE()->bool:
     return tf.io.gfile.exists(COLAB_PATH)
 
 class Colaboratory():
+    """ ColaboratoryとGoogle Driveの間のコピーを実施する
+
+    """
 
     resumed = False
 
     @classmethod
     def copy_resume_data_from_google_drive(cls):
+        """ 学習を再開用のバックアップデータをGoogleドライブからColaboratoryにコピーする。
+
+        """
         context = Context.get_instance()
         name = context[Context.TRAINING_NAME]
         base = context[Context.TRAINING_BASE_DIR]
@@ -36,6 +48,9 @@ class Colaboratory():
 
     @classmethod
     def copy_suspend_data_from_colab(cls):
+        """ Colaboratory上に保存してある学習を再開させるためのデータをGoogleドライブにバックアップする。
+
+        """
         context = Context.get_instance()
         name = context[Context.TRAINING_NAME]
         base = context[Context.TRAINING_BASE_DIR]

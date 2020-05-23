@@ -1,17 +1,30 @@
+""" 学習の一時中断、再開を行う処理を提供する
+
+"""
+
 import os
 import tensorflow as tf
 from . context import Context
 from . colab import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 
 def ENABLE_SUSPEND_RESUME_TRAIN():
+    """ 一時中断、再開を行う学習を実施する
+
+    """
     context = Context.get_instance()
     context[Context.SUSPEND_RESUME] = True
 
-def IS_SUSPEND_RESUME_TRAIN():
+def IS_SUSPEND_RESUME_TRAIN()->bool:
+    """ 一時中断、再開を行う学習を実施するか確認する
+    
+    """
     context = Context.get_instance()
     return context[Context.SUSPEND_RESUME]
 
 class ResumeExecutor():
+    """再開処理を提供する
+
+    """
 
     instance = None
 
@@ -27,6 +40,11 @@ class ResumeExecutor():
 
     @classmethod
     def get_instance(cls)->'ResumeExecutor':
+        """インスタンスを取得する
+
+        Returns:
+            [type] -- [description]
+        """
         if cls.instance == None:
             cls.instance = ResumeExecutor()
         
@@ -47,6 +65,11 @@ class ResumeExecutor():
         return ret
 
     def is_train_ended(self)->bool:
+        """再開用データを確認し、学習が終了しているかを返却する
+
+        Returns:
+            bool -- [description]
+        """
         context = Context.get_instance()
         if context[Context.SUSPEND_RESUME] == False:
             return False
@@ -57,6 +80,11 @@ class ResumeExecutor():
             return False
     
     def is_resumable_training(self)->bool:
+        """ 再開可能な学習かを返却する
+
+        Returns:
+            bool -- [description]
+        """
         context = Context.get_instance()
         if context[Context.SUSPEND_RESUME] == False:
             return False
@@ -77,13 +105,35 @@ class ResumeExecutor():
         return self.path + os.path.sep + ResumeExecutor.RESUME_FILE
 
     def resume_values(self)->(int,float):
+        """ 中断データをファイルから読み取る
+
+        Arguments:
+            self {[type]} -- [description]
+            float {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         lv = self._load_values()
         return lv
 
     def resume_model(self,model:tf.keras.Model):
+        """モデルを再開する
+
+        Arguments:
+            model {tf.keras.Model} -- 重みを読み込み、再開したいモデル（コンパイル済）
+        """
         model.load_weights(self._get_model_path())
 
     def suspend(self,epoch,lr,best,model):
+        """ 中断可能なデータを保存する
+
+        Arguments:
+            epoch {[type]} -- [description]
+            lr {[type]} -- [description]
+            best {[type]} -- [description]
+            model {[type]} -- [description]
+        """
         self._check_dir()
         file = self._get_resume_path()
         f = tf.io.gfile.GFile(file, mode="w")
@@ -99,6 +149,9 @@ class ResumeExecutor():
             Colaboratory.copy_suspend_data_from_colab()
 
     def training_completed(self):
+        """学習が完了したことを記録する
+
+        """
         self._check_dir()
         f = tf.io.gfile.GFile(self._get_resume_path(), mode="w")
         resume_info = f.write(str(0)+","+str(0.0)+"," +str(0.0)+","+ str(True))
@@ -106,6 +159,3 @@ class ResumeExecutor():
         
         if IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE():
             Colaboratory.copy_suspend_data_from_colab()
-
-
-

@@ -716,7 +716,7 @@ class KerasEfficientNetB0(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB0(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB0(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 
 class KerasEfficientNetB1(AbstractClassificationModel):
@@ -733,7 +733,7 @@ class KerasEfficientNetB1(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB1(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB1(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 
 class KerasEfficientNetB2(AbstractClassificationModel):
@@ -750,7 +750,7 @@ class KerasEfficientNetB2(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB2(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB2(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 
 class KerasEfficientNetB3(AbstractClassificationModel):
@@ -767,7 +767,7 @@ class KerasEfficientNetB3(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB3(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB3(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 
 class KerasEfficientNetB4(AbstractClassificationModel):
@@ -786,7 +786,7 @@ class KerasEfficientNetB4(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB4(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB4(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 
 class KerasEfficientNetB5(AbstractClassificationModel):
@@ -805,7 +805,7 @@ class KerasEfficientNetB5(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB5(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB5(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 class KerasEfficientNetB6(AbstractClassificationModel):
 
@@ -823,7 +823,7 @@ class KerasEfficientNetB6(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB6(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB6(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")
 
 class KerasEfficientNetB7(AbstractClassificationModel):
 
@@ -839,4 +839,4 @@ class KerasEfficientNetB7(AbstractClassificationModel):
         else:
             activation = swish
         
-        return EfficientNetB7(input_shape=input, activation=activation, include_top=include_top, weights=weights)
+        return EfficientNetB7(input_shape=input, activation=activation, include_top=include_top, weights=weights,pooling="avg")

@@ -1,3 +1,7 @@
+"""学習時に使用するコールバックとユーティリティを提供する。
+
+"""
+
 from abc import ABC, abstractclassmethod
 
 import tensorflow as tf
@@ -91,6 +95,14 @@ class SuspendCallback(tf.keras.callbacks.Callback):
 
 
     def on_train_begin(self, epoch:int, logs=None):
+        """学習の開始処理
+
+        Arguments:
+            epoch {int} -- [description]
+
+        Keyword Arguments:
+            logs {[type]} -- [description] (default: {None})
+        """
         if IS_SUSPEND_RESUME_TRAIN() == True:
             exe = ResumeExecutor.get_instance()
             if exe.is_resumable_training():
@@ -141,14 +153,13 @@ class CallbackBuilder():
             name: トレーニングの名前、base_dir/nameにデータを保存する
             resume: Resumeの有無
 
-
-
         Keyword Arguments:
             tensorboard_log_dir {str} -- tensorboardログを出力します。Noneの場合、出力しません。 (default: {None})
             profile_batch{str} -- プロファイルを行う際の開始バッチ、終了バッチを指定します。Noneの場合実行しません。
             save_weights {str} -- モデルを保存します。 (default: {"./tmp/model.hdf5"})
             monitor {str} -- [description] (default: {"val_acc"})
             max_epoch
+
         Returns:
             [type] -- [description]
         """

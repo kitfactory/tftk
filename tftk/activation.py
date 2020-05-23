@@ -1,3 +1,8 @@
+"""学習時のActivationを提供する
+
+"""
+
+
 """Tensorflow-Keras Implementation of Mish"""
 
 ## Import Necessary Modules

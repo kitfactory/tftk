@@ -150,9 +150,7 @@ class Place365Small(BaseDataset):
         return ds, info.splits["test"].num_examples
 
 
-
-
-class Food1o1(BaseDataset):
+class Food101(BaseDataset):
     @classmethod
     def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
         ds, info = tfds.load(name="food101", split="train",with_info=True)

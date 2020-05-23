@@ -1,9 +1,19 @@
+"""学習時にコンテキストとして共有する情報を保持する。
+
+"""
+
 from typing import Dict
 
 import os
 from datetime import datetime
 
 class Context(Dict):
+    """tftk.Context
+    
+    コンテキストとして情報を保持する。
+    コンテキストはDictとして利用できる。
+    
+    """
 
     instance = None
 
@@ -19,12 +29,29 @@ class Context(Dict):
     
     @classmethod
     def init_context(cls, **kwargs):
+        """コンテキストの初期化
+
+        与えられた引数でコンテキストを初期化する
+
+        Examples:
+
+            引数はkwargsで渡す
+
+            ::
+            Context.init_context(TRAINING_NAME="foo")
+
+        """
         ctx = Context.get_instance()
         for k in kwargs.keys():
             ctx[k] = kwargs[k]
     
     @classmethod
     def get_instance(cls)->'Context':
+        """ Contextオブジェクトを取得する
+
+        Returns:
+            Context -- 生成されたコンテキスト
+        """
         if cls.instance == None:
             cls.instance = Context()
             cls.instance[Context.TRAINING_BASE_DIR] ="tmp"
