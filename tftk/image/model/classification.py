@@ -40,8 +40,6 @@ class SimpleClassificationModel(AbstractClassificationModel):
 
         x = tf.keras.layers.Conv2D(filters=128,kernel_size=(3,3),padding="same")(x) 
         x = tf.keras.layers.Activation('relu')(x)
-        x = tf.keras.layers.MaxPool2D((2,2))(x)
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
         model = tf.keras.Model(inputs=inputs,outputs=x)
         return model
 
@@ -52,7 +50,7 @@ class KerasResNet50(AbstractClassificationModel):
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.ResNet50(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
+        model = tf.keras.applications.ResNet50(include_top=False, weights=weights, input_shape=input_shape)
         return model
 
 class KerasResNet50V2(AbstractClassificationModel):
@@ -62,7 +60,7 @@ class KerasResNet50V2(AbstractClassificationModel):
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.ResNet50V2(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
+        model = tf.keras.applications.ResNet50V2(include_top=False, weights=weights, input_shape=input_shape)
         return model
 
 class KerasMobileNetV2(AbstractClassificationModel):
@@ -72,17 +70,28 @@ class KerasMobileNetV2(AbstractClassificationModel):
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.MobileNetV2(include_top=False, weights=weights, input_shape=input_shape,pooling="avg")
+        model = tf.keras.applications.MobileNetV2(include_top=False, weights=weights, input_shape=input_shape)
         return model
 
-class KerasEfficentNetB0(AbstractClassificationModel):
+class KerasInceptionResNetV2(AbstractClassificationModel):
 
     def __init__(self):
         pass
     
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
-        model = tf.keras.applications.EfficientNetB0(include_top=False, weights=weights, input_shape=input_shape, pooling="avg")
+        model = tf.keras.applications.InceptionResNetV2(include_top=False, weights=weights, input_shape=input_shape)
+        return model
+
+
+class KerasInceptionV3(AbstractClassificationModel):
+
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def get_base_model(cls,input_shape:(int,int,int),include_top:bool,weights:str=None,**kwargs) -> tf.keras.Model:
+        model = tf.keras.applications.InceptionV3(include_top=False, weights=weights, input_shape=input_shape)
         return model
 
 
@@ -93,16 +102,31 @@ class ClassificationModel():
     def __init__(self):
         pass
 
+
+        """
+        x = AveragePooling2D(pool_size=(8, 8))(x)
+x = Dropout(.4)(x)
+x = Flatten()(x)
+predictions = Dense(n_classes, init='glorot_uniform', W_regularizer=l2(.0005), activation='softmax')(x)
+
+        Returns:
+            [type] -- [description]
+        """
+
     @classmethod
     def get_classify_model(cls, base_model:tf.keras.Model, classes:int)->tf.keras.Model:        
         input = base_model.input
         last = base_model.output
+        
+        x = tf.keras.layers.AveragePooling2D()(last)
+        x = tf.keras.layers.Dropout(0.3)(x)
+        x = tf.keras.layers.Flatten()(x)
 
         if classes != 2:
-            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(last)
+            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)
             x = tf.keras.layers.Activation('softmax',dtype='float32')(x)
         else:
-            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(last)
+            x = tf.keras.layers.Dense(classes,dtype='float32',kernel_initializer='he_normal')(x)
             x = tf.keras.layers.Activation('sigmoid',dtype='float32')(x)
         return tf.keras.Model(input,x)
 

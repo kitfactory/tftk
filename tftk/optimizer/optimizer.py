@@ -4,28 +4,27 @@ import tftk
 class OptimizerBuilder():
 
     @classmethod
-    def get_optimizer(cls,name:str,**kwargs)->tf.keras.optimizers.Optimizer:
+    def get_optimizer(cls,name:str="sgd",**kwargs)->tf.keras.optimizers.Optimizer:
         """Optimizerを取得する。
         
         Arguments:
-            name {str} --　オプティマイザの名称{sgd/adadelta}
+            name {str} --　オプティマイザの名称{sgd/adadelta,rmsprop デフォルト sgd}
 
-            lr {float}  -- SGDの学習率(デフォルト 0.01) , adadeltaの学習率(デフォルト 1.0)
-            sgd_momentum {float} -- SGDのモーメンタム,デフォルト 0.0
-            sgd_nestrov {bool} -- SGDのnestrov
-            adadelta_rho {float} -- デフォルト 0.95
-            adadelta_epsilon {float} -- adadeltaのepsilon デフォルトNone
-            adadelta_decay {float} -- adadeltaのdecay デフォルト0.0
+            lr {float}  -- SGD,Adadelta,RMSpropの学習率(デフォルト 0.05) , adadeltaの場合は学習率(デフォルト 1.0)
+            momentum {float} -- SGDのモーメンタム,デフォルト 0.0
+            nestrov {bool} -- SGDのnestrov デフォルト 0.9
+            rho {float} -- Adadelta rho デフォルト 0.95
+            epsilon {float} -- Adadeltaのepsilon デフォルトNone
+            decay {float} -- Adadeltaのdecay デフォルト0.0
         
         Returns:
             tf.keras.optimizers.Optimizer -- [description]
         """
         ret = None
         if name == "sgd":
-            learning_rate = kwargs.get("lr", 0.01)
-            momentum = kwargs.get("sgd_momentum", 0.0)
+            learning_rate = kwargs.get("lr", 0.04)
+            momentum = kwargs.get("sgd_momentum", 0.9)
             nesterov = kwargs.get("sgd_nestrov" , False)
-            print("learning_rate",learning_rate,"momentum",momentum,"nestrov",nesterov)
             ret = tf.keras.optimizers.SGD(learning_rate=learning_rate,momentum=momentum,nesterov=nesterov)
         elif name == "adadelta":
             # lr=1.0, rho=0.95, epsilon=None, decay=0.0
@@ -43,7 +42,7 @@ class OptimizerBuilder():
             # ret = tf.keras.optimizers.Adam(learning_rate=learning_rate,beta_1=beta_1,beta_2=beta_2,epsilon=epsilon)
             ret = tf.keras.optimizers.Adam()
         elif name =='rmsprop':
-            lr = kwargs.get("lr", 0.001)
+            lr = kwargs.get("lr", 0.04)
             ret = tf.keras.optimizers.RMSprop(lr=lr)
         
         if tftk.IS_MIXED_PRECISION() == True:

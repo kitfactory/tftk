@@ -40,20 +40,15 @@ from tftk.train.image import ImageTrain
 from tftk.image.augument import ImageAugument
 from tftk.callback import CallbackBuilder
 from tftk.optimizer import OptimizerBuilder
+from typing import Dict
 
 # from tftk.model.image.base import ResNet50
 # from tftk.model.image.base import MobileNetV2
 
+
+
+
 if __name__ == '__main__':
-
-    # dataset, len = Food1o1.get_train_dataset()
-    # ImageCrawler.crawl_keywords_save_folder(name="animals",keywords=["ライオン","ゾウ","キリン","ネコ","イヌ","コウテイペンギン","ジェンツーペンギン","ワラビー","チーター","ピューマ"], base_dir="tmp",max_num=3000,train_ratio=0.8)
-    # ImageCrawler.crawl_keywords_save_folder(name="nintendo",keywords=["とたけけ","たぬきち","ゼルダ","マリオ","ピカチュウ","ヒトカゲ","ヨッシー","クラウド","ティファ"], base_dir="tmp",max_num=3000,train_ratio=0.8)
-    #  (train,train_len),(validation,validation_len)=ImageDatasetUtil.devide_train_validation(dataset,len,0.9)
-
-    # dataset, len = PatchCamelyon.get_train_dataset()
-    # train,train_len = ImageLabelFolderDataset.get_train_dataset(name='animals',manual_dir='tmp')
-    # validation, validation_len = ImageLabelFolderDataset.get_test_dataset(name='animals', manual_dir='tmp')
 
 
     tftk.USE_MIXED_PRECISION()
@@ -69,12 +64,11 @@ if __name__ == '__main__':
     train, train_len = Food101.get_train_dataset()
     validation, validation_len = Food101.get_validation_dataset()
 
-    train = train.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageAugument.randaugment_map(2,4))
+    train = train.map(ImageDatasetUtil.resize_and_max_square_crop(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageAugument.randaugment_map(1,4))
     train = train.map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE).apply(ImageAugument.mixup_apply(200,0.1))
-    validation = validation.map(ImageDatasetUtil.resize_with_crop_or_pad(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    validation = validation.map(ImageDatasetUtil.resize_and_max_square_crop(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE).map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
-    optimizer = OptimizerBuilder.get_optimizer(name="rmsprop",lr=0.005)
-    # model = EfficientNetB0(input_shape=(IMAGE_SIZE,IMAGE_SIZE,CHANNELS),include_top=True,classes=CLASS_NUM,weights=None)
+    optimizer = OptimizerBuilder.get_optimizer()
     model = KerasEfficientNetB0.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,CHANNELS),classes=CLASS_NUM,weights="imagenet") # resnest=True,resnet_c=True,resnet_d=True,mish=True)
     callbacks = CallbackBuilder.get_callbacks(tensorboard=True, consine_annealing=False, reduce_lr_on_plateau=True,reduce_patience=6,reduce_factor=0.25,early_stopping_patience=10)
     ImageTrain.train_image_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=EPOCHS)

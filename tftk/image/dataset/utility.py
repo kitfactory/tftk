@@ -1,11 +1,34 @@
 import tensorflow as tf
 from typing import Dict,List, Callable
 
+
+
+max_crop_width = 100
+max_crop_height = 100
+
+def resize_and_max_square_crop(data:Dict)->Dict:
+    global max_crop_height
+    global max_crop_width
+
+    image = data['image']
+    h = tf.shape(image)[0]
+    w = tf.shape(image)[1]
+    if ( h > w ):
+         image = tf.image.crop_to_bounding_box(image,2//w,0,w,w)
+    else:
+        image = tf.image.crop_to_bounding_box(image,0,2//h,h,h)
+    image = tf.image.resize(image,(max_crop_height,max_crop_width))
+    data['image']  = tf.cast(image, tf.uint8)
+    return data
+
+
+
 class ImageDatasetUtil():
 
     def __init__(self):
         pass
     
+
     @classmethod
     def devide_train_validation(cls, dataset:tf.data.Dataset, length:int, ratio:float)->((tf.data.Dataset,int),(tf.data.Dataset,int)):
         """学習用と検証用のデータセットに分割する。
@@ -124,7 +147,7 @@ class ImageDatasetUtil():
 
 
     @classmethod
-    def resize_with_crop_or_pad(cls, hight:int, width:int)->Callable[[Dict],Dict]:
+    def map_resize_with_crop_or_pad(cls, height:int, width:int)->Callable[[Dict],Dict]:
         """データセットの画像をクロップないしはパッドしてリサイズする。
         
         Args:
@@ -134,11 +157,21 @@ class ImageDatasetUtil():
         Returns:
             Mapする関数: Dataset.map()に適用する関数
         """
-        def resize_with_crop_or_pad_map(data:Dict)->Dict:
-            data["image"] = tf.image.resize_with_crop_or_pad(data["image"], hight, width)
-            return data
-        return resize_with_crop_or_pad_map
-    
+        global max_crop_height
+        global max_crop_width
+
+        max_crop_height = height
+        max_crop_width = width
+
+        return resize_and_max_square_crop
+
+
+    @classmethod
+    def map_max_square_crop_and_resize(cls,height:int, width:int)->Callable[[Dict],Dict]:
+        cls.height = height
+        cls.width = width
+        return ImageDatasetUtil.resize_and_max_square_crop
+
     @classmethod
     def resize(cls, h:int, w:int)->Callable[[Dict],Dict]:
         """データセットの画像をリサイズする。
