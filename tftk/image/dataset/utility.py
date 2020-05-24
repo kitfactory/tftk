@@ -168,9 +168,12 @@ class ImageDatasetUtil():
 
     @classmethod
     def map_max_square_crop_and_resize(cls,height:int, width:int)->Callable[[Dict],Dict]:
-        cls.height = height
-        cls.width = width
-        return ImageDatasetUtil.resize_and_max_square_crop
+        global max_crop_height
+        global max_crop_width
+
+        max_crop_height = height
+        max_crop_width = width
+        return resize_and_max_square_crop
 
     @classmethod
     def resize(cls, h:int, w:int)->Callable[[Dict],Dict]:

@@ -45,8 +45,8 @@ class OptimizerBuilder():
             # ret = tf.keras.optimizers.Adam(learning_rate=learning_rate,beta_1=beta_1,beta_2=beta_2,epsilon=epsilon)
             ret = tf.keras.optimizers.Adam()
         elif name =='rmsprop':
-            lr = kwargs.get("lr", 0.04)
-            ret = tf.keras.optimizers.RMSprop(lr=lr)
+            lr = kwargs.get("lr", 0.001)
+            ret = tf.keras.optimizers.RMSprop(learning_rate=lr)
         
         if tftk.IS_MIXED_PRECISION() == True:
             ret = tf.keras.mixed_precision.experimental.LossScaleOptimizer(ret, loss_scale='dynamic')       

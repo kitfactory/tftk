@@ -252,17 +252,16 @@ class ResNetBuilder():
 
         # 1 X 1 conv if shape is different. Else identity.
         if stride_width > 1 or stride_height > 1 or not equal_channels:
-            # print("---downsample shortcut----")
             shortcut = tf.keras.layers.Conv2D(filters=output_shape[ResNetBuilder.CHANNEL_AXIS],
                 kernel_size=(1, 1),
                 strides=(stride_width, stride_height),
                 padding="valid",
                 kernel_initializer="he_normal",
-                kernel_regularizer=tf.keras.regularizers.l2(0.0001),
+                # kernel_regularizer=tf.keras.regularizers.l2(0.0001),
                 name=self.get_layer_name(layer,block,"shortcut_conv"))(shortcut)
         
-        shortcut = tf.keras.layers.BatchNormalization(axis=ResNetBuilder.CHANNEL_AXIS,
-                name=self.get_layer_name(layer,block,"shortcut_batchnorm"))(shortcut)
+            shortcut = tf.keras.layers.BatchNormalization(axis=ResNetBuilder.CHANNEL_AXIS,
+                 name=self.get_layer_name(layer,block,"shortcut_batchnorm"))(shortcut)
         
 
         x = tf.keras.layers.Add()([output,shortcut]) #  shortcut path
@@ -285,7 +284,7 @@ class ResNetBuilder():
                       strides=strides, padding="same",
                       dilation_rate=dilation_rate,
                       kernel_initializer=ki,
-                      kernel_regularizer=kr,
+                      # kernel_regularizer=kr,
                       name=self.get_layer_name(layer=layer,block=block,elem="conv2d"))(x)
         elif layer == 2 and block==1:
             # MaxPoolingでダウンサンプル、BN/Reluが要らない
@@ -294,7 +293,7 @@ class ResNetBuilder():
                       strides=strides, padding="same",
                       dilation_rate=dilation_rate,
                       kernel_initializer=ki,
-                      kernel_regularizer=kr,
+                      # kernel_regularizer=kr,
                       name=self.get_layer_name(layer=layer,block=block,elem="conv2d"))(x)
         else:
             # BN/Reluが要る、ダウンサンプルする。
@@ -305,12 +304,11 @@ class ResNetBuilder():
                       strides=strides, padding="same",
                       dilation_rate=dilation_rate,
                       kernel_initializer=ki,
-                      kernel_regularizer=kr,
+                      # kernel_regularizer=kr,
                       name=self.get_layer_name(layer=layer,block=block,elem="conv2d"))(x)
         return x
 
     def basic_block(self, input:tf.Tensor, layer:int, filters:int):
-        # print("basic block layer",layer)
         x = self.get_residual_unit_v2(x=input,layer=layer,block=1, filters=filters, kernel_size=(3,3))
         x2 = self.shortcut(input,x,layer,1)
 
@@ -370,7 +368,9 @@ class ResNetBuilder():
         ki = "he_normal"
         kr = tf.keras.regularizers.l2(1e-4)
 
-        x = tf.keras.layers.Conv2D(filters=filters, kernel_size=(1,1), kernel_initializer=ki,kernel_regularizer=kr, padding="same", name=self.get_layer_name(layer, block ,"cnn1"))(input)
+        x = tf.keras.layers.Conv2D(filters=filters, kernel_size=(1,1), kernel_initializer=ki,
+            # kernel_regularizer=kr, 
+            padding="same", name=self.get_layer_name(layer, block ,"cnn1"))(input)
         x = tf.keras.layers.BatchNormalization(axis=-1,name=self.get_layer_name(layer, block ,"split_batchnorm1"))(x)
         # x = self.dropblock(x, prob)
         x = tf.keras.layers.Activation(self.activation, name=self.get_layer_name(layer,block,"split_{}".format(self.activation)))(x)
@@ -378,7 +378,9 @@ class ResNetBuilder():
         if self.size > 34 or downsample == True:
             x = self.split_atteintion_conv(x,layer,block,filters)
         else:
-            x = tf.keras.layers.Conv2D(filters=filters, kernel_size=(3,3),kernel_initializer=ki,kernel_regularizer=kr,padding="same")(x)
+            x = tf.keras.layers.Conv2D(filters=filters, kernel_size=(3,3),kernel_initializer=ki,
+            # kernel_regularizer=kr,
+            padding="same")(x)
             x = tf.keras.layers.BatchNormalization(axis=-1,name=self.get_layer_name(layer, block ,"split_batchnorm1-2"))(x)
             x = tf.keras.layers.Activation(self.activation, name=self.get_layer_name(layer,block,"split_{}-2".format(self.activation)))(x)
 
@@ -431,8 +433,6 @@ class ResNetBuilder():
         fc2_cnn_channels = filters * radix
         third_cnn_channels = filters
 
-        # print("split attention input",input, "filters", filters , "img_h", self.img_h, "img_w", self.img_w)
-
         # まとめるには？
         # 2-1は1層目は全部まとめて filters*cardinality
         # 2-2は2層目は?
@@ -459,20 +459,15 @@ class ResNetBuilder():
             # concatenate
             if cardinality == 1:
                 radix_group = x
-                # print("radix_group",radix_group)
             else:
                 radix_group = tf.keras.layers.Concatenate()(cardinal_branch)
-                # print("radix_group",radix_group)
             radix_branch.append(radix_group)
 
         # Add
-        # print("radix branch",radix_branch)
         gx = tf.keras.layers.Add()(radix_branch)
         
         # Global pooling
         gp = tf.keras.layers.GlobalAveragePooling2D()(gx) # チャンネルごとにPooling?
-        # print("global avarage pooling", gp)
-
         gp = tf.keras.layers.Reshape((1,1,second_cnn_channels))(gp)
 
         # Keras Conv2DにgroupがないのでCardinality分にK分割し、Denseを2度実施する。
@@ -494,11 +489,9 @@ class ResNetBuilder():
             concat_sx = tf.keras.layers.Concatenate()(slices)
         # reshape to rsoftmax acceptable
         reshape_sx = tf.keras.layers.Reshape((radix,filters),name=self.get_layer_name(layer,block,"reshape"))(concat_sx)
-        # print("reshape_sx", reshape_sx)
 
         # get attention
         attention = self.rsoftmax(reshape_sx,radix,fc2_cnn_channels)
-        # print("attention",attention)
         def elemwise_multiply(tensors):
             x = tensors[0]
             y = tensors[1]
@@ -510,19 +503,14 @@ class ResNetBuilder():
             # # for i in range(c):
             # #    s.append(x*y)
             # # st =  tf.keras.backend.stack(s)
-            # print("st",st)
             # r = tf.keras.backend.reshape(st, shape=(-1,self.img_h,self.img_w,c))
-            # print("r",r)
             # return r
         radix_values = []
         for r in range(radix):
             radix_feature = radix_branch[r]
-            # print("radix_group_feature",radix_feature)
             radix_attention = tf.keras.layers.Lambda((lambda x:x[:,r]),output_shape=(1,filters))(attention)
-            # print("radix_attention",radix_attention)
 
             rv = tf.keras.layers.Lambda(elemwise_multiply,name="multiply{}-{}-r{}".format(layer,block,r),output_shape=(self.img_h,self.img_h,filters))([radix_feature,radix_attention,filters])            
-            # print("rv",rv)
             radix_values.append(rv)
 
         if radix == 1:
@@ -545,11 +533,8 @@ class ResNetBuilder():
         """
         if radix > 1:
             # x = tf.keras.layers.Reshape((radix,(fc2_cnn_channels//cardinality)))(x)
-            # print("x1", x)
             # x = tf.keras.layers.Permute((2,1))(x)
-            # print("x1", x)
             x = tf.keras.layers.Softmax(axis=1)(x)
-            # print("x1", x)
             # x = x.reshape((0, self.cardinality, self.radix, -1)).swapaxes(1, 2)
             # x = x.softmax(x, axis=1)
             # x = x.reshape((0, -1))
@@ -690,10 +675,10 @@ class ResNetBuilder():
         # final activation
         x = tf.keras.layers.BatchNormalization(axis=ResNetBuilder.CHANNEL_AXIS, name=self.get_layer_name(6,0,"final-batchnorm"))(x)
         x = tf.keras.layers.Activation(self.activation, name=self.get_layer_name(6,0,"final-"+self.activation))(x)
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
+        # x = tf.keras.layers.GlobalAveragePooling2D()(x)
 
         model = tf.keras.Model(img_input, x)
-        model.summary()
+        # model.summary()
         return model
 
 class ResNet18(AbstractClassificationModel):
@@ -708,7 +693,7 @@ class ResNet18(AbstractClassificationModel):
         if weights is not None:
             raise NotImplementedError("This model not support include top")
 
-        mish = kwargs.get('mish', True)
+        mish = kwargs.get('mish', False)
         resnet_c = kwargs.get("resnet_c", False)
         resnet_d = kwargs.get("resnet_d", False)
         resnest = kwargs.get("resnest", False)

@@ -1,7 +1,7 @@
 ## Taken from keras contrib.
 ## https://github.com/keras-team/keras-contrib
 
-__all__ = ['ResNet18','ResNet34']
+__all__ = ['KerasResNet18','KerasResNet34']
 
 """ResNet v1, v2, and segmentation models for Keras.
 # Reference
@@ -469,16 +469,16 @@ def ResNet152_Model(input_shape, classes):
 
 
 
-class ResNet18(AbstractClassificationModel):
+class KerasResNet18(AbstractClassificationModel):
     def __init__(self):
         pass
 
     @classmethod
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False, weighs:str=None,**kwargs) -> tf.keras.Model:
-        return ResNet(input_shape, basic_block, repetitions=[2, 2, 2, 2],include_top=False,final_pooling='avg')
+        return ResNet(input_shape, basic_block, repetitions=[2, 2, 2, 2],include_top=False)
 
 
-class ResNet34(AbstractClassificationModel):
+class KerasResNet34(AbstractClassificationModel):
     def __init__(self):
         pass
 
@@ -486,7 +486,7 @@ class ResNet34(AbstractClassificationModel):
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False,weighs:str=None,**kwargs) -> tf.keras.Model:
         return ResNet(input_shape, basic_block, repetitions=[3, 4, 6, 3], include_top=False, final_pooling='avg')
 
-
+""" Now Working"
 class ResNeSt18(AbstractClassificationModel):
     def __init__(self):
         pass
@@ -495,6 +495,8 @@ class ResNeSt18(AbstractClassificationModel):
     def get_base_model(cls,input_shape:(int,int,int),include_top:bool=False, weighs:str=None,**kwargs) -> tf.keras.Model:
         return ResNet(input_shape, basic_block, repetitions=[2, 2, 2, 2],include_top=False,final_pooling='avg')
 
+
+"""
 
 """
 

@@ -118,8 +118,8 @@ predictions = Dense(n_classes, init='glorot_uniform', W_regularizer=l2(.0005), a
         input = base_model.input
         last = base_model.output
         
-        x = tf.keras.layers.AveragePooling2D()(last)
-        x = tf.keras.layers.Dropout(0.3)(x)
+        x = tf.keras.layers.GlobalAveragePooling2D()(last)
+        x = tf.keras.layers.Dropout(0.2)(x)
         x = tf.keras.layers.Flatten()(x)
 
         if classes != 2:

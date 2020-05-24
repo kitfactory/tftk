@@ -2,7 +2,7 @@ from typing import List
 import tensorflow as tf
 
 from tftk.image.dataset import ImageDatasetUtil
-from tftk import IS_SUSPEND_RESUME_TRAIN, ResumeExecutor
+from tftk import ResumeExecutor
 from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 
 class ImageTrain():
@@ -56,10 +56,7 @@ class ImageTrain():
         validation_data = validation_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE)
         validation_data = validation_data.repeat().batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
-        # model.compile(optimizer=optimizer,  loss=loss,  metrics="val_loss")
-
         model.compile(optimizer=optimizer, loss=loss, metrics=["acc"])
-
         model.summary()
 
         initial_epoch = 0

@@ -155,7 +155,7 @@ class SuspendCallback(tf.keras.callbacks.Callback):
 
 class CallbackBuilder():
     @classmethod
-    def get_callbacks(cls, tensorboard:bool=True, profile_batch:str=None, consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0, **kwargs):
+    def get_callbacks(cls, tensorboard:bool=True, consine_annealing=False, reduce_lr_on_plateau=True, early_stopping=True,**kwargs):
         """よく利用するコールバックを簡単に取得できるようにします。
 
         デフォルトではTensorBoard,ReduceLROnPlateau(),EarlyStopping(val_loss非更新、10エポックで停止)が自動的に選ばれます。
@@ -230,8 +230,8 @@ class CallbackBuilder():
             early_stopping_patience = kwargs.get("early_stopping_patience", 8)
             callbacks.append(tf.keras.callbacks.EarlyStopping(patience=early_stopping_patience,verbose=1))
 
-        if csv == True:
-            callbacks.append(tf.keras.callbacks.CSVLogger());
+        # if csv == True:
+        #     callbacks.append(tf.keras.callbacks.CSVLogger());
         
         if IS_SUSPEND_RESUME_TRAINING() == True:
             print("Suspend Resume Callback")

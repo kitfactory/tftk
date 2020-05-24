@@ -7,20 +7,18 @@ from tftk import Context
 
 from tftk.train.image import ImageTrain
 
-from tftk import ENABLE_SUSPEND_RESUME_TRAIN, IS_SUSPEND_RESUME_TRAIN, ResumeExecutor
+from tftk import ENABLE_SUSPEND_RESUME_TRAINING, ResumeExecutor
 
 if __name__ == '__main__':
 
-    context = Context.init_context()
-    ENABLE_SUSPEND_RESUME_TRAIN()
+    context = Context.init_context(TRAINING_NAME='mnist')
+    ENABLE_SUSPEND_RESUME_TRAINING()
 
     BATCH_SIZE = 500
     CLASS_NUM = 10
     IMAGE_SIZE = 28
     EPOCHS = 2
     SHUFFLE_SIZE = 1000
-    BASEDIR = "./tmp"
-    TRAIN_NAME = "resume_test"
 
     # if IS_SUSPEND_RESUME_TRAIN() == True and IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE()== True:
     
