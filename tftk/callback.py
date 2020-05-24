@@ -10,15 +10,12 @@ import os
 import sys
 from tftk import ResumeExecutor
 from tftk import Context
-from tftk import IS_SUSPEND_RESUME_TRAIN
+from tftk import IS_SUSPEND_RESUME_TRAINING
 from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE
 from tftk import Colaboratory
 
 class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
-    """Cosine annealing scheduler.
-    Cosine annealingを行います。このソースコードは以下を参照しています。
-    https://github.com/4uiiurz1/keras-cosine-annealing
-    
+    """Cosine annealingを行います。　以下のソースコードを参照(感謝) https://github.com/4uiiurz1/keras-cosine-annealing    
     """
 
     def __init__(self, T_max:int, eta_max:float, eta_min:float=0, verbose=0):
@@ -78,8 +75,21 @@ class CosineAnnealingScheduler(tf.keras.callbacks.Callback):
 class SuspendCallback(tf.keras.callbacks.Callback):
     """学習の経過を保存し、次回実行時に再開させる情報を記録する
 
-    Args:
-        tf ([type]): [description]
+    tftk.ENABLE_SUSPEND_RESUME_TRAINING()を有効にすることで、自動的に利用されます。
+
+    Example:
+        import tftk
+        from tftk.callbacks import HandyCallback
+        from tftk.train.image import ImageTrain
+
+        # 学習の有効化
+        tftk.ENABLE_SUSPEND_RESUME_TRAINING()
+
+        # コールバックの取得（ここで取得できるコールバックに自動追加されます)
+        callback = HandyCallback.get_callbacks()
+
+        ImageTrain.train_image_classification(xxxxxx, callback=callback)
+
     """
 
     def __init__(self,  suspend_on_best:bool =True , monitor:str="val_loss",path:str=None):
@@ -103,7 +113,7 @@ class SuspendCallback(tf.keras.callbacks.Callback):
         Keyword Arguments:
             logs {[type]} -- [description] (default: {None})
         """
-        if IS_SUSPEND_RESUME_TRAIN() == True:
+        if IS_SUSPEND_RESUME_TRAINING() == True:
             exe = ResumeExecutor.get_instance()
             if exe.is_resumable_training():
                 resume = exe.resume_values()
@@ -145,23 +155,34 @@ class SuspendCallback(tf.keras.callbacks.Callback):
 
 class CallbackBuilder():
     @classmethod
-    def get_callbacks(cls, tensorboard:bool=True, profile_batch:str=None, consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0):
-        """よく利用するコールバックを設定します。
+    def get_callbacks(cls, tensorboard:bool=True, profile_batch:str=None, consine_annealing=False, cosine_init_lr=0.01, cosine_max_epochs = 60, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.2,reduce_min=1e-6, early_stopping_patience=0, **kwargs):
+        """よく利用するコールバックを簡単に取得できるようにします。
+
+        デフォルトではTensorBoard,ReduceLROnPlateau(),EarlyStopping(val_loss非更新、10エポックで停止)が自動的に選ばれます。
+        また、tftk.ENABLE_SUSPEND_RESUME_TRAINING()が有効な場合、中断/再開を可能にするSuspendCallbackが使用されます。
         
         Parameters:
-            base_dir: ログを行うベースディレクトリ
-            name: トレーニングの名前、base_dir/nameにデータを保存する
-            resume: Resumeの有無
+            tensorboard : TensorBoardのログをBaseDir/TrainingName以下に保存する場合はTrueを指定する。未指定時 True
+            cosine_annealing : CosineAnnealingを行い学習率をコントロールする場合はTrue、未指定時 False
+            reduce_lr_on_plateau : ReduceLROnPlateauで停滞時に学習率を下げる場合はTrue 、未指定時 True
+            ealy_stopping : EarlyStoppingで停滞時に学習を終了する場合、True。 未指定時 True.
+            csv_logger : CSVLoggerを使用し、学習の記録を行う
 
         Keyword Arguments:
-            tensorboard_log_dir {str} -- tensorboardログを出力します。Noneの場合、出力しません。 (default: {None})
             profile_batch{str} -- プロファイルを行う際の開始バッチ、終了バッチを指定します。Noneの場合実行しません。
-            save_weights {str} -- モデルを保存します。 (default: {"./tmp/model.hdf5"})
             monitor {str} -- [description] (default: {"val_acc"})
-            max_epoch
+            annealing_epoch : コサイン・アニーリング全体のエポック数、指定なし 100エポック
+            init_lr : コサイン・アニーリングする際の最初の学習率、未指定時 0.01
+            min_lr : 最小の学習率、コサイン・アニーリング時 = 1e-6, ReduceOnPlateau時1e-6
+            patience : ReduceOnPlateau使用時にpatienceエポック数、モニター値の更新がない場合、factor分学習率を下げる。
+            early_stopping_patience : EalyStopping利用時に、このエポック数、monitor値の更新がなければ、学習を終了する。
 
         Returns:
-            [type] -- [description]
+            List[tf.keras.callbacks.Callback] -- 学習に使用するコールバックのList
+
+        Example:
+            from tftk.callbacks import HandyCallback
+            callbacks = HandyCallback.get_callbacks(early_stopping_patience=15)
         """
 
         context = Context.get_instance()
@@ -169,20 +190,6 @@ class CallbackBuilder():
         name = context[Context.TRAINING_NAME]
 
         traing_dir = base + os.path.sep + name
-
-        # if name != None:
-        #     base = base_dir + os.path.sep + name
-        # else:
-        #     files = os.listdir(base_dir)
-        #     max_num = 0
-        #     for f in files:
-        #         try:
-        #             tmp = int(f)
-        #             if tmp +1 > max_num:
-        #                 max_num = tmp + 1
-        #         except Exception as e:
-        #             pass
-        #     base = base_dir + os.path.sep + str(max_num)
         
         if tf.io.gfile.exists(traing_dir)== False:
             tf.io.gfile.makedirs(traing_dir)
@@ -192,6 +199,7 @@ class CallbackBuilder():
         if tensorboard is True:
             # print("Callback-TensorBoard")
             tensorboard_log_dir = traing_dir + os.path.sep + "log"
+            profile_batch = kwargs.get("profile_batch", None)
             if profile_batch != None:
                 callbacks.append(tf.keras.callbacks.TensorBoard(log_dir=tensorboard_log_dir,profile_batch=profile_batch,histogram_freq=1))
             else:
@@ -201,17 +209,31 @@ class CallbackBuilder():
         #     print("Callback-ModelCheckPoint")
         #     save_path = base + os.path.sep  + "model.hdf5"
         #     callbacks.append(tf.keras.callbacks.ModelCheckpoint(filepath=save_path,monitor="val_acc",save_best_only=True,save_weights_only=True))
+
         if consine_annealing == True:
             print("Callback-CosineAnnealing")
-            cosine_annealer = CosineAnnealingScheduler(cosine_max_epochs,eta_max=cosine_init_lr,eta_min=0.0)
+            annealing_epoch = kwargs.get("annealing_epoch", 100)
+            init_lr = kwargs.get("init_lr", 0.01)
+            min_lr = kwargs.get("min_lr", 1e-6)
+            cosine_annealer = CosineAnnealingScheduler(annealing_epoch,eta_max=init_lr,eta_min=min_lr)
             callbacks.append(cosine_annealer)
+            reduce_lr_on_plateau = False
+        
         if reduce_lr_on_plateau ==True:
             print("Callback-ReduceOnPlateau")
-            callbacks.append(tf.keras.callbacks.ReduceLROnPlateau(patience=reduce_patience,factor=reduce_factor,verbose=1,min_lr=reduce_min))
-        if early_stopping_patience != 0:
+            patience = kwargs.get("patience",5)
+            factor = kwargs.get("factor",0.25)
+            min_lr = kwargs.get("min_lr",1e-6)
+            callbacks.append(tf.keras.callbacks.ReduceLROnPlateau(patience=patience,factor=factor,verbose=1,min_lr=min_lr))
+
+        if early_stopping == True:
+            early_stopping_patience = kwargs.get("early_stopping_patience", 8)
             callbacks.append(tf.keras.callbacks.EarlyStopping(patience=early_stopping_patience,verbose=1))
 
-        if IS_SUSPEND_RESUME_TRAIN() == True:
+        if csv == True:
+            callbacks.append(tf.keras.callbacks.CSVLogger());
+        
+        if IS_SUSPEND_RESUME_TRAINING() == True:
             print("Suspend Resume Callback")
             callbacks.append(SuspendCallback())
 

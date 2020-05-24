@@ -4,14 +4,6 @@ tftk.train package
 Submodules
 ----------
 
-tftk.train.callbacks module
----------------------------
-
-.. automodule:: tftk.train.callbacks
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tftk.train.image module
 -----------------------
 

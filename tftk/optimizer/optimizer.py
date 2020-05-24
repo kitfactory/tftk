@@ -2,6 +2,9 @@ import tensorflow as tf
 import tftk
 
 class OptimizerBuilder():
+    """学習で利用するOptimizerを提供する。混合精度の場合も自動的に調整する。
+
+    """
 
     @classmethod
     def get_optimizer(cls,name:str,**kwargs)->tf.keras.optimizers.Optimizer:

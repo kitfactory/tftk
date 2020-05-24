@@ -8,10 +8,10 @@ import os
 from datetime import datetime
 
 class Context(Dict):
-    """tftk.Context
+    """学習のコンテキスト保持クラスです。
     
-    コンテキストとして情報を保持する。
-    コンテキストはDictとして利用できる。
+    処理に必要な情報を保持します。
+    コンテキストはDictとして利用できます。
     
     """
 
@@ -31,13 +31,9 @@ class Context(Dict):
     def init_context(cls, **kwargs):
         """コンテキストの初期化
 
-        与えられた引数でコンテキストを初期化する
+        学習冒頭で与えられた引数でコンテキストを初期化する
 
-        Examples:
-
-            引数はkwargsで渡す
-
-            ::
+        Example:
             Context.init_context(TRAINING_NAME="foo")
 
         """

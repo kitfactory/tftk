@@ -21,7 +21,7 @@ def IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE()->bool:
     return tf.io.gfile.exists(COLAB_PATH)
 
 class Colaboratory():
-    """ ColaboratoryとGoogle Driveの間のコピーを実施する
+    """ ColaboratoryとGoogle Driveの間のコピーを実施するユーティリティ
 
     """
 
