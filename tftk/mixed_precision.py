@@ -9,8 +9,16 @@ from . context import Context
 mixed_precision = False
 
 
-def USE_MIXED_PRECISION():
-    """ 学習冒頭で呼び出すことで、混合精度を有効にする
+def ENABLE_MIXED_PRECISION():
+    """ 学習の冒頭で呼び出すことで、混合精度を有効にする
+
+    学習の冒頭で混合精度を使用した学習を行う宣言をします。
+
+    Example:
+        USE_MIXED_PRECISION()
+        ... 
+        ... 
+
 
     """
     Context.get_instance()[Context.MIXED_PRECISION]=True
@@ -20,22 +28,7 @@ def USE_MIXED_PRECISION():
 def IS_MIXED_PRECISION()->bool:
     """ 混合精度を利用した学習を実施しているかを確認する。
 
-    
-
     """
     policy = tf.keras.mixed_precision.experimental.global_policy()
     context = Context.get_instance()
     return context[Context.MIXED_PRECISION]
-
-
-"""
---- ポリシーの設定
-policy = mixed_precision.Policy('mixed_float16')
-mixed_precision.set_policy(policy)
----
-
---optimizerをdynamicでラップ
-optimizer = keras.optimizers.RMSprop()
-optimizer = mixed_precision.LossScaleOptimizer(optimizer, loss_scale='dynamic')
---
-"""

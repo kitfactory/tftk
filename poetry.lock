@@ -422,6 +422,14 @@ tests = ["pandas", "pillow", "tensorflow (1.7)", "keras", "pytest", "pytest-xdis
 
 [[package]]
 category = "main"
+description = "Klink is a simple and clean theme for creating Sphinx docs, inspired by jrnl"
+name = "klink"
+optional = false
+python-versions = "*"
+version = "0.1.9"
+
+[[package]]
+category = "main"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
 name = "lxml"
 optional = false
@@ -819,6 +827,14 @@ test = ["pytest", "pytest-cov", "html5lib", "typed-ast", "cython"]
 
 [[package]]
 category = "main"
+description = "Sphinx Material Design Theme"
+name = "sphinx-materialdesign-theme"
+optional = false
+python-versions = "*"
+version = "0.1.11"
+
+[[package]]
+category = "main"
 description = "Read the Docs theme for Sphinx"
 name = "sphinx-ustack-theme"
 optional = false
@@ -1205,7 +1221,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "7711418871f6946593b5d475fb8669b13ef7dc7c8f85096445deb509009bb7f6"
+content-hash = "335e68c6303abce0edd02366a2a4882d27ff8d44397b55d7a066188c792c5cba"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -1404,6 +1420,9 @@ joblib = [
 keras-preprocessing = [
     {file = "Keras_Preprocessing-1.1.0-py2.py3-none-any.whl", hash = "sha256:44aee5f2c4d80c3b29f208359fcb336df80f293a0bb6b1c738da43ca206656fb"},
     {file = "Keras_Preprocessing-1.1.0.tar.gz", hash = "sha256:5a8debe01d840de93d49e05ccf1c9b81ae30e210d34dacbcc47aeb3049b528e5"},
+]
+klink = [
+    {file = "klink-0.1.9.tar.gz", hash = "sha256:0677cc21f3cfd4fa5a8c1ea61a4ecc4c3475f76023f20dd09757b919aa1e6d6a"},
 ]
 lxml = [
     {file = "lxml-4.5.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:0701f7965903a1c3f6f09328c1278ac0eee8f56f244e66af79cb224b7ef3801c"},
@@ -1705,6 +1724,9 @@ soupsieve = [
 sphinx = [
     {file = "Sphinx-3.0.3-py3-none-any.whl", hash = "sha256:f5505d74cf9592f3b997380f9bdb2d2d0320ed74dd69691e3ee0644b956b8d83"},
     {file = "Sphinx-3.0.3.tar.gz", hash = "sha256:62edfd92d955b868d6c124c0942eba966d54b5f3dcb4ded39e65f74abac3f572"},
+]
+sphinx-materialdesign-theme = [
+    {file = "sphinx_materialdesign_theme-0.1.11.tar.gz", hash = "sha256:6e9dae4c6e5ba23c0657a94c1cf65f64be9c8bc1594a6fb41815f7daa3326aa9"},
 ]
 sphinx-ustack-theme = [
     {file = "sphinx_ustack_theme-1.0.0-py2.py3-none-any.whl", hash = "sha256:dde00981fd1ddfc0d7392aa9822b7fb805e451e8d2861441e401a965ca00c593"},

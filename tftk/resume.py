@@ -7,16 +7,27 @@ import tensorflow as tf
 from . context import Context
 from . colab import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 
-def ENABLE_SUSPEND_RESUME_TRAIN():
+def ENABLE_SUSPEND_RESUME_TRAINING():
     """ 一時中断、再開を行う学習を実施する
+
+    冒頭でリジュームを宣言してください。
+    
+    Example:
+        ENABLE_SUSPEND_RESUME_TRAINING()
+
+        ... 通常の学習
+        ...
 
     """
     context = Context.get_instance()
     context[Context.SUSPEND_RESUME] = True
 
-def IS_SUSPEND_RESUME_TRAIN()->bool:
-    """ 一時中断、再開を行う学習を実施するか確認する
+def IS_SUSPEND_RESUME_TRAINING()->bool:
+    """ 一時中断、再開を行う学習を実施するかを確認する
     
+    Returns:
+        bool : 中断、再開を行う場合、True
+
     """
     context = Context.get_instance()
     return context[Context.SUSPEND_RESUME]
@@ -43,7 +54,7 @@ class ResumeExecutor():
         """インスタンスを取得する
 
         Returns:
-            [type] -- [description]
+            ResumeExecutor -- [description]
         """
         if cls.instance == None:
             cls.instance = ResumeExecutor()
@@ -68,7 +79,7 @@ class ResumeExecutor():
         """再開用データを確認し、学習が終了しているかを返却する
 
         Returns:
-            bool -- [description]
+            bool -- 再開用データが存在していて、終了している場合はTrue
         """
         context = Context.get_instance()
         if context[Context.SUSPEND_RESUME] == False:
@@ -83,7 +94,7 @@ class ResumeExecutor():
         """ 再開可能な学習かを返却する
 
         Returns:
-            bool -- [description]
+            bool -- 再開可能かどうか
         """
         context = Context.get_instance()
         if context[Context.SUSPEND_RESUME] == False:
@@ -107,12 +118,9 @@ class ResumeExecutor():
     def resume_values(self)->(int,float):
         """ 中断データをファイルから読み取る
 
-        Arguments:
-            self {[type]} -- [description]
-            float {[type]} -- [description]
-
         Returns:
-            [type] -- [description]
+            int : エポック数
+            float : 学習率
         """
         lv = self._load_values()
         return lv
@@ -121,7 +129,7 @@ class ResumeExecutor():
         """モデルを再開する
 
         Arguments:
-            model {tf.keras.Model} -- 重みを読み込み、再開したいモデル（コンパイル済）
+            tf.keras.Model -- 重みを読み込み、再開したいモデル（コンパイル済）
         """
         model.load_weights(self._get_model_path())
 
@@ -129,10 +137,10 @@ class ResumeExecutor():
         """ 中断可能なデータを保存する
 
         Arguments:
-            epoch {[type]} -- [description]
-            lr {[type]} -- [description]
-            best {[type]} -- [description]
-            model {[type]} -- [description]
+            epoch {int} -- 保存するエポック
+            lr {float} -- 保存する学習率
+            best {float} -- モニター値
+            model {tf.kera.Model} -- 保存するモデル
         """
         self._check_dir()
         file = self._get_resume_path()

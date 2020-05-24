@@ -6,6 +6,9 @@ from tftk import IS_SUSPEND_RESUME_TRAIN, ResumeExecutor
 from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 
 class ImageTrain():
+    """画像を使用した学習を提供するユーティリティです。
+
+    """
 
     def __init__(self):
         pass
@@ -21,7 +24,28 @@ class ImageTrain():
         optimizer:tf.keras.optimizers.Optimizer,
         loss:tf.keras.losses.Loss,
         max_epoch:int = 5, resume:bool = True):
+        """画像分類の学習を実施します。
+        
+        Parameters:
+            train_data{tf.data.Dataset}: 学習に使用するトレーニングデータ
+            train_size{int}: トレーニングデータのデータ数
+            batch_size{int} : 学習時のバッチサイズ
+            shuffle_size : 学習時のデータシャッフルサイズ
+            model{tf.keras.} : 学習モデル
 
+        Example:
+            import tftk
+
+
+            tftk.Context.init_context(
+                TRAINING_NAME = "example_traninig1"
+                TRAINING_BASE_DIR = "./tmp"
+            )
+            tftk.ENABLE_SUSPEND_RESUME_TRAINING()
+            tftk.USE_MIXED_PRECISION()
+            
+
+        """
         # dataset = dataset.shuffle(1024).batch(32).prefetch(tf.data.experimental.AUTOTUNE)
 
         train_data = train_data.map(ImageDatasetUtil.dict_to_classification_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE).repeat()
