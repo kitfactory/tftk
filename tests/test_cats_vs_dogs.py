@@ -25,13 +25,14 @@ if __name__ == '__main__':
     train, train_len = ImageLabelFolderDataset.get_train_dataset(name="dogs-vs-cats", manual_dir="tmp")
     validation, validation_len = ImageLabelFolderDataset.get_validation_dataset(name="dogs-vs-cats", manual_dir="tmp")
 
-    train = train.map(ImageDatasetUtil.map_max_square_crop_and_resize(IMAGE_SIZE,IMAGE_SIZE))
-    train = train.map(ImageDatasetUtil.image_reguralization())
-    train = train.map(ImageDatasetUtil.one_hot(CLASS_NUM))
+    train = train.map(ImageDatasetUtil.map_max_square_crop_and_resize(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    train = train.map(ImageAugument.randaugment_map(2,4),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    train = train.map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    train = train.map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
-    validation = validation.map(ImageDatasetUtil.map_max_square_crop_and_resize(IMAGE_SIZE,IMAGE_SIZE))
-    validation = validation.map(ImageDatasetUtil.image_reguralization())
-    validation = validation.map(ImageDatasetUtil.one_hot(CLASS_NUM))
+    validation = validation.map(ImageDatasetUtil.map_max_square_crop_and_resize(IMAGE_SIZE,IMAGE_SIZE),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    validation = validation.map(ImageDatasetUtil.image_reguralization(),num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    validation = validation.map(ImageDatasetUtil.one_hot(CLASS_NUM),num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
     optimizer = OptimizerBuilder.get_optimizer(name="rmsprop")
     model = KerasResNet18.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,IMAGE_CHANNELS),classes=CLASS_NUM)
