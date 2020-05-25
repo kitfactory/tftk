@@ -83,7 +83,7 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 |データ操作|説明|メソッド|
 |:--|:--|:--|
 |データセットの分割|データセットを指定の比率で分割します|tftk.image.dataset.utility.ImageDatasetUtility#devide_train_validation()|
-|データセットの正規化 | 画素値を0-255から0.0～1.0に|tftk.image.dataset.utility.ImageDatasetUtility#
+|データセットの正規化 | 画素値を0-255から0.0～1.0に|tftk.image.dataset.utility.ImageDatasetUtility#image_reguralization()|
 |ラベルのone-hot化|ラベル値をone-hot形式にします。ラベル3->(0,0,1,0,0)|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
 
 ### 2.3.データの操作
