@@ -79,11 +79,12 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 
 これらのメソッドは tf.data.Dataset#map()やapply()で利用できるように作られています。
 
+
 |データ操作|説明|メソッド|
 |:--|:--|:--|
-|データセットの分割|tftk.image.dataset.utility.ImageDatasetUtility#devide_train_validation()|
-|データセットの正規化|画素値を0-255から0.0～1.0に|tftk.image.dataset.utility.ImageDatasetUtility#
-|ラベルのone-hot化|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
+|データセットの分割|データセットを指定の比率で分割します|tftk.image.dataset.utility.ImageDatasetUtility#devide_train_validation()|
+|データセットの正規化 | 画素値を0-255から0.0～1.0に|tftk.image.dataset.utility.ImageDatasetUtility#
+|ラベルのone-hot化|ラベル値をone-hot形式にします。ラベル3->(0,0,1,0,0)|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
 
 ### 2.3.データの操作
 
@@ -131,3 +132,9 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 
 * Google Colab用学習をGoogle Driveに退避/復帰 
 * 混合精度(Mixed Precision)を使った学習
+
+## 4.Special Thanks
+
+本プロジェクトは多数のOSSで成り立っています。
+ソースコード内にライセンスや参照先を記載しています。
+
