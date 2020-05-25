@@ -36,7 +36,7 @@ dataset = dataset.map(ImageDatasetUtil.dataset_init_classification(10))
 (train, train_size),(validation, validation_size) = ImageDatasetUtil.devide_train_validation(dataset,len,0.9)
 
 # 簡単なCNNモデルを用意します。
-model = SimpleBaseModel.get_base_model(28,28,1)
+model = SimpleBaseModel.get_model(input_shape=(28,28,1),classes=10)
 
 # Optimizerやコールバックを取得します。
 optimizer = Optimizer.get_optimizer()
