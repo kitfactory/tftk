@@ -120,11 +120,11 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 
 ## 2.6. 活性化関数
 
-以下の活性化関数でReluをオーバーライドすることが可能です。また、EfficientNetモデルではswishではなく、mishをデフォルトで使用します。
+以下の活性化関数で、既存のモデルのReluをオーバーライドすることが可能です。また、EfficientNetモデルではswishではなく、mishをデフォルトで使用します。
 
 |活性化関数|説明|リンク|
 |:--|:--|:--|
-|Mish|最強と|tftk.USE_MISH_AS_RELU()|
+|Mish|最強と思しき活性化関数|tftk.USE_MISH_AS_RELU()|
 
 ## 3.そのほかのオプション機能
 
