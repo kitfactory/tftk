@@ -1,5 +1,12 @@
 # TFTK (TensorFlow ToolKit)
 
+## Downloads
+
+Total : [![Downloads](https://pepy.tech/badge/tftk)](https://pepy.tech/project/tftk)
+
+Weekly : [![Downloads](https://pepy.tech/badge/tftk/week)](https://pepy.tech/project/tftk/week)
+
+
 ## 1. What is TFTK ?
 
 TFTKはTensorFlowを簡単化するライブラリです。
@@ -9,6 +16,10 @@ TFTKはTensorFlowを簡単化するライブラリです。
 * データセットの操作を簡単にします。
 * データの拡張を簡単にします。
 * モデルも多数組み合わせられます。単純なCNNモデルから、ResNet/EfficientNetまで。
+
+
+
+
 
 ## インストール
 
