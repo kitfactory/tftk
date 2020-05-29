@@ -14,6 +14,7 @@ from . efficientnet import KerasEfficientNetB7
 from . efficientnet import EfficientNetB0
 from . classification import SimpleClassificationModel
 
+
 # from . efficientnet import KerasEfficientNetB1
 # from . efficientnet import KerasEfficientNetB2
 
@@ -22,6 +23,8 @@ from . small_resnet_keras_contrib import KerasResNet34
 # from . resnet import ResNet18
 # from . resnet import ResNet34
 # from . resnet import ResNet50
+
+from . autoencoder import SimpleAutoEncoderModel
 
 __all__ = [
     'AbstractClassificationModel'
@@ -39,7 +42,8 @@ __all__ = [
     'KerasEfficientNetB6',
     'KerasEfficientNetB7',
     'EfficientNetB0',
-    'SimpleClassificationModel'
+    'SimpleClassificationModel',
+    'SimpleAutoEncoderModel'
 ]
 
 """

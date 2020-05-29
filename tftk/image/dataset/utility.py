@@ -135,6 +135,7 @@ class ImageDatasetUtil():
             return (data["image"], data["label"])
         return __dict_to_classification_tuple
     
+
     @classmethod
     def dict_to_autoencoder_tuple(cls):
         """dict形式のデータをtf.keras.Model.fit()用に変換する
@@ -142,8 +143,9 @@ class ImageDatasetUtil():
         Returns:
             [type]: [description]
         """
-        pass
-        
+        def dict_to_ae_tuple(data:Dict)->(tf.Tensor,tf.Tensor):
+            return (data["image"], data["image"])
+        return dict_to_ae_tuple
 
 
     @classmethod
