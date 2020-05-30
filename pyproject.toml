@@ -21,6 +21,7 @@ tensorflow_addons = "^0.10.0"
 sphinx = "^3.0.3"
 sphinx_ustack_theme = "^1.0.0"
 sphinx_materialdesign_theme = "^0.1.11"
+matplotlib = "^3.2.1"
 
 [tool.poetry.dev-dependencies]
 

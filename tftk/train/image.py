@@ -6,6 +6,7 @@ from tftk import ResumeExecutor
 from tftk import IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE, Colaboratory
 from PIL import Image
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -212,7 +213,7 @@ class ImageTrain():
             concat = Image.new('RGB',(512,256))
             concat.paste(orig_im,(0,0))
             concat.paste(y_im,(256,0))
-            concat.show()
+            plt.imshow(np.array(concat))
             i += 1
             if i == size:
                 return
