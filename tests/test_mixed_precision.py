@@ -2,7 +2,7 @@ import tftk
 from tftk.image.dataset import Place365Small
 from tftk.image.dataset import ImageDatasetUtil
 from tftk.image.model import ResNet50
-from tftk.image.train import Trainer
+from tftk.train import TrainingExecutor
 from tftk.image.augument import ImageAugument
 from tftk.callback import CallbackBuilder
 from tftk.optimizer import OptimizerBuilder
@@ -31,4 +31,4 @@ model = ResNet50.get_model(input_shape=(IMAGE_SIZE,IMAGE_SIZE,3),classes=CLASS_N
 callbacks = CallbackBuilder.get_callbacks(tensorboard_log_dir="tmp\\log",save_weights="tmp\\weigths.hdf5", consine_annealing=False)
 
 # トレーニングの実施
-Trainer.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=50)
+TrainingExecutor.train_classification(train_data=train,train_size=train_len,batch_size=BATCH_SIZE,validation_data=validation,validation_size=validation_len,shuffle_size=SHUFFLE_SIZE,model=model,callbacks=callbacks,optimizer=optimizer,loss="categorical_crossentropy",max_epoch=50)

@@ -25,6 +25,7 @@ from . small_resnet_keras_contrib import KerasResNet34
 # from . resnet import ResNet50
 
 from . autoencoder import SimpleAutoEncoderModel
+from . autoencoder import SSIMAutoEncoderModel
 
 __all__ = [
     'AbstractClassificationModel'
@@ -43,7 +44,8 @@ __all__ = [
     'KerasEfficientNetB7',
     'EfficientNetB0',
     'SimpleClassificationModel',
-    'SimpleAutoEncoderModel'
+    'SimpleAutoEncoderModel',
+    'SSIMAutoEncoderModel'
 ]
 
 """

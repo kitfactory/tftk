@@ -44,10 +44,7 @@ class ResumeExecutor():
     MODEL_FILE = 'model.h5'
 
     def __init__(self):
-        context = Context.get_instance()
-        self.base_dir = context[Context.TRAINING_BASE_DIR]
-        self.name = context[Context.TRAINING_NAME]
-        self.path = self.base_dir + os.path.sep + self.name
+        self.path = Context.get_training_path()
 
     @classmethod
     def get_instance(cls)->'ResumeExecutor':
@@ -167,3 +164,8 @@ class ResumeExecutor():
         
         if IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE():
             Colaboratory.copy_suspend_data_from_colab()
+        
+        # 終了時にクリアする
+        ResumeExecutor.instance = None
+
+    

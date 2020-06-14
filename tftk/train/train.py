@@ -1,4 +1,6 @@
 from typing import List
+import time
+
 import tensorflow as tf
 
 from tftk.image.dataset import ImageDatasetUtil
@@ -11,8 +13,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-class ImageTrain():
-    """画像を使用した学習を提供するユーティリティです。
+class TrainingExecutor():
+    """学習を提供するユーティリティです。
 
     """
 
@@ -20,7 +22,7 @@ class ImageTrain():
         pass
     
     @classmethod
-    def train_image_classification(
+    def train_classification(
         cls,
         train_data:tf.data.Dataset, train_size:int, batch_size:int,
         validation_data:tf.data.Dataset, validation_size:int,
@@ -38,6 +40,9 @@ class ImageTrain():
             batch_size{int} : 学習時のバッチサイズ
             shuffle_size : 学習時のデータシャッフルサイズ
             model{tf.keras.} : 学習モデル
+
+        Return:
+            history : 学習の結果
 
         Example:
             import tftk
@@ -91,22 +96,27 @@ class ImageTrain():
 
         steps_per_epoch = train_size//batch_size
         validation_steps = validation_size//batch_size
-        history = model.fit(
-            train_data,
-            callbacks=callbacks,
-            validation_data=validation_data,
-            steps_per_epoch=steps_per_epoch,
-            validation_steps=validation_steps,
-            epochs=max_epoch, initial_epoch=initial_epoch)
 
-
-        tf.keras.backend.clear_session()
-        del optimizer,callbacks,model,train_data,validation_data
-        return history
-
+        try:
+            history = model.fit(
+                train_data,
+                callbacks=callbacks,
+                validation_data=validation_data,
+                steps_per_epoch=steps_per_epoch,
+                validation_steps=validation_steps,
+                epochs=max_epoch, initial_epoch=initial_epoch)
+            return history
+        except Exception as ex:
+            raise ex
+        finally:
+            tf.keras.backend.clear_session()
+            del optimizer,callbacks,model,train_data,validation_data
+            if exe.is_resumable_training() == True:
+                exe.training_completed()
+            time.sleep(5)
 
     @classmethod
-    def train_image_autoencoder(
+    def train_autoencoder(
         cls,
         train_data:tf.data.Dataset, train_size:int, batch_size:int,
         validation_data:tf.data.Dataset, validation_size:int,
@@ -124,6 +134,9 @@ class ImageTrain():
             batch_size{int} : 学習時のバッチサイズ
             shuffle_size : 学習時のデータシャッフルサイズ
             model{tf.keras.Model} : 学習モデル
+        
+        Return:
+            history : 学習の結果
 
         Example:
             import tftk
@@ -138,7 +151,6 @@ class ImageTrain():
             
         """    
 
-   
         train_data = train_data.map(ImageDatasetUtil.dict_to_autoencoder_tuple(),num_parallel_calls=tf.data.experimental.AUTOTUNE).repeat()
         if shuffle_size != 0:
             train_data = train_data.shuffle(shuffle_size)
@@ -175,18 +187,23 @@ class ImageTrain():
 
         steps_per_epoch = train_size//batch_size
         validation_steps = validation_size//batch_size
-        history = model.fit(
-            train_data,
-            callbacks=callbacks,
-            validation_data=validation_data,
-            steps_per_epoch=steps_per_epoch,
-            validation_steps=validation_steps,
-            epochs=max_epoch, initial_epoch=initial_epoch)
-        tf.keras.backend.clear_session()
-        del optimizer,callbacks,model,train_data,validation_data
-        return history
-
-    
+        try:
+            history = model.fit(
+                train_data,
+                callbacks=callbacks,
+                validation_data=validation_data,
+                steps_per_epoch=steps_per_epoch,
+                validation_steps=validation_steps,
+                epochs=max_epoch, initial_epoch=initial_epoch)
+            return history
+        except Exception as ex:
+            raise ex
+        finally:
+            tf.keras.backend.clear_session()
+            del optimizer,callbacks,model,train_data,validation_data
+            if exe.is_resumable_training() == True:
+                exe.training_completed()
+            time.sleep(5)
 
     @classmethod
     def show_autoencoder_results(cls, model:tf.keras.Model, dataset:tf.data.Dataset , size:int):
@@ -270,7 +287,7 @@ class ImageTrain():
 
     
     @classmethod
-    def train_image_gan(cls, generator:tf.keras.Model,  discriminator:tf.keras.Model, dataset:tf.data.Dataset, gan_input_shape=(32,), **kwargs):
+    def train_gan(cls, generator:tf.keras.Model,  discriminator:tf.keras.Model, dataset:tf.data.Dataset, gan_input_shape=(32,), **kwargs):
 
         # discriminator コンパイル
         discriminator_optimizer = tf.keras.optimizers.RMSprop(lr=0.008,clipvalue=1.0,decay=1e-8)
@@ -286,15 +303,3 @@ class ImageTrain():
         gan = tf.keras.Model(gan_input,gan_output)
         gan_optimizer = tf.keras.optimizers.RMSprop(lr=0.0004,clipvalue=1.0,decay=1e-8)
         gan.compile()
-        
-
-
-"""
-fit(
-    x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None,
-    validation_split=0.0, validation_data=None, shuffle=True, class_weight=None,
-    sample_weight=None, initial_epoch=0, steps_per_epoch=None,
-    validation_steps=None, validation_freq=1, max_queue_size=10, workers=1,
-    use_multiprocessing=False, **kwargs
-)
-"""

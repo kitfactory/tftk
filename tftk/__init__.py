@@ -14,5 +14,6 @@ __all__ = [
     'ENABLE_SUSPEND_RESUME_TRAINING',
     'IS_SUSPEND_RESUME_TRAINING',
     'ResumeExecutor',
-    'Context'
+    'Context',
+    'ENABLE_OPTUNA_TRAINING'
 ]

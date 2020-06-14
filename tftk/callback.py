@@ -8,6 +8,9 @@ import tensorflow as tf
 import math
 import os
 import sys
+
+from optuna.integration import TFKerasPruningCallback
+
 from tftk import ResumeExecutor
 from tftk import Context
 from tftk import IS_SUSPEND_RESUME_TRAINING
@@ -120,7 +123,7 @@ class SuspendCallback(tf.keras.callbacks.Callback):
                 e,l,b,_ = resume
                 self.best_value = b
                 self.model.optimizer.lr = l
-                # print("Suspend Call Resume LR",l)
+                print("Suspend Call Resume LR",l)
 
     def on_epoch_begin(self, epoch:int, logs=None):
         pass
@@ -147,15 +150,20 @@ class SuspendCallback(tf.keras.callbacks.Callback):
                 exe.suspend(epoch,lr,self.best_value,self.model)
             
     def on_train_end(self, epoch:int, logs=None):
-        context = Context.get_instance()
-        if context[Context.TRAINING_NO_EPOCH_LIMIT] == False:
-            exe = ResumeExecutor.get_instance()
-            exe.training_completed()
+        # context = Context.get_instance()
+        # if context[Context.TRAINING_NO_EPOCH_LIMIT] == False:
+        exe = ResumeExecutor.get_instance()
+        exe.training_completed()
+
 
 
 class CallbackBuilder():
+    """ Callbackを簡単に用意するためのユーティリティクラス
+        Contxtの内容に応じてmixed precisionやOptunaに対応したコールバックを自動的に調整します。    
+    """
+
     @classmethod
-    def get_callbacks(cls, tensorboard:bool=True, consine_annealing=False, reduce_lr_on_plateau=True, early_stopping=True,**kwargs):
+    def get_callbacks(cls, tensorboard:bool=True, consine_annealing=False, reduce_lr_on_plateau=True, early_stopping=True, monitor='val_loss', **kwargs):
         """よく利用するコールバックを簡単に取得できるようにします。
 
         デフォルトではTensorBoard,ReduceLROnPlateau(),EarlyStopping(val_loss非更新、10エポックで停止)が自動的に選ばれます。
@@ -167,10 +175,10 @@ class CallbackBuilder():
             reduce_lr_on_plateau : ReduceLROnPlateauで停滞時に学習率を下げる場合はTrue 、未指定時 True
             ealy_stopping : EarlyStoppingで停滞時に学習を終了する場合、True。 未指定時 True.
             csv_logger : CSVLoggerを使用し、学習の記録を行う
+            monitor {str} -- [description] (default: {"val_acc"})
 
         Keyword Arguments:
             profile_batch{str} -- プロファイルを行う際の開始バッチ、終了バッチを指定します。Noneの場合実行しません。
-            monitor {str} -- [description] (default: {"val_acc"})
             annealing_epoch : コサイン・アニーリング全体のエポック数、指定なし 100エポック
             init_lr : コサイン・アニーリングする際の最初の学習率、未指定時 0.01
             min_lr : 最小の学習率、コサイン・アニーリング時 = 1e-6, ReduceOnPlateau時1e-6
@@ -189,7 +197,8 @@ class CallbackBuilder():
         base = context[Context.TRAINING_BASE_DIR]
         name = context[Context.TRAINING_NAME]
 
-        traing_dir = base + os.path.sep + name
+
+        traing_dir = Context.get_training_path()
         
         if tf.io.gfile.exists(traing_dir)== False:
             tf.io.gfile.makedirs(traing_dir)
@@ -226,16 +235,19 @@ class CallbackBuilder():
             min_lr = kwargs.get("min_lr",1e-6)
             callbacks.append(tf.keras.callbacks.ReduceLROnPlateau(patience=patience,factor=factor,verbose=1,min_lr=min_lr))
 
-        if early_stopping == True:
+        if early_stopping == True & context.get(Context.OPTUNA, False) == False:
             early_stopping_patience = kwargs.get("early_stopping_patience", 8)
-            callbacks.append(tf.keras.callbacks.EarlyStopping(patience=early_stopping_patience,verbose=1))
-
-        # if csv == True:
-        #     callbacks.append(tf.keras.callbacks.CSVLogger());
+            callbacks.append(tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=early_stopping_patience,verbose=1))
         
         if IS_SUSPEND_RESUME_TRAINING() == True:
             print("Suspend Resume Callback")
-            callbacks.append(SuspendCallback())
+            callbacks.append(SuspendCallback(monitor=monitor))
+        
+        if context.get(Context.OPTUNA, False) == True:
+            print("Using Optuna")
+            # callbacks.append()
+            trial = context.get(Context.OPTUNA_TRIAL)
+            callbacks.append(TFKerasPruningCallback(trial, monitor=monitor))
 
         return callbacks
 

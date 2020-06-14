@@ -13,6 +13,7 @@ all = [
     'ImageLabelFolderDataset',
     'ImageNetResized',
     'ImageDatasetUtil',
+    'SingleImageUtil',
     'ImageNet2012',
     'AbstractClassificationModel',
     'ImageCrawler',

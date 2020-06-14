@@ -226,8 +226,7 @@ class CatsVsDogs(BaseDataset):
 
     @classmethod
     def get_test_dataset(cls)->(tf.data.Dataset, int):
-        ds, info = tfds.load(name="cats_vs_dogs", split="test",with_info=True)
-        return ds, info.splits["test"].num_examples
+        raise Exception("No test data")
 
 class RockPaperScissors(BaseDataset):
 

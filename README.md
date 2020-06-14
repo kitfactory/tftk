@@ -39,7 +39,10 @@ __After__
 from tftk.dataset.image import Mnist,ImageDatasetUtil
 from tftk.image.model import SimpleClassificationModel
 from tftk.image.callbacks import HandyCallback
-from tftk.train.image import ImageTrain
+from tftk.train import TrainingExecutor
+
+
+Context.init_context('mnist') # tmp/mnistディレクトリに学習結果を管理します。
 
 # Mnistデータセットを取得し、9:1に分割します。
 dataset, len = Mnist.get_train_dataset()
@@ -54,7 +57,7 @@ optimizer = Optimizer.get_optimizer()
 callbacks = HandyCallback.get_callbacks() 
 
 # 学習します
-ImageTrain.train_image_classification(
+TrainingExecutor.train_classification(
     train_data=train,
     train_size = train_size,
     validation_data=validation,
@@ -149,3 +152,39 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 本プロジェクトは多数のOSSで成り立っています。
 ソースコード内にライセンスや参照先を記載しています。
 
+
+
+
+
+
+
+
+
+-------
+
+Optunaとの融合
+
+* 分散する
+* MongoDB Storage
+
+* シナリオ・最適化トレーニング
+
+データ拡張のパラメータを追跡することが可能である。
+さらに最適化とあわせて、コントロールすることが可能である。
+
+
+
+
+--
+
+## 特徴量の抽出
+* 教師なしの場合、自分を学習対象にするオートエンコーダー
+* 他の教師結果から、回復をするオートエンコーダー
+* 滲みのない、特徴量の次元の少ないオートエンコーダーは何か。
+
+
+## 
+* アテンションの獲得
+
+## 
+* Grad-CAM
