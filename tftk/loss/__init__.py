@@ -1,5 +1,5 @@
-from . loss import ssim_image_loss
+from . loss import ssim_color_loss
 
 __all__ = [
-    'ssim_image_loss'
+    'ssim_color_loss'
 ]

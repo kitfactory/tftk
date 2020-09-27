@@ -1,29 +1,24 @@
 import tensorflow as tf
+import tftk
 
-def ssim_image_loss(y_true, y_pred):
-    print(y_true, y_pred)
-    y_true_mono = tf.keras.backend.mean(y_true, axis=3) # モノクロ化
-    y_true_mono = tf.reshape(y_true_mono,[-1,128,128,1])
-    y_pred_mono = tf.keras.backend.mean(y_true, axis=3) # モノクロ化
-    y_pred_mono = tf.reshape(y_pred_mono,[-1,128,128,1])
-    print(y_true_mono, y_pred_mono)
 
-    return tf.reduce_mean(tf.image.ssim_multiscale(y_true_mono, y_pred_mono, 2.0))    
-    # loss = tf.image.ssim(y_true_mono, y_pred_mono, max_val=1.0)
-    # loss = tf.reshape(loss, [-1,1])
-    # print(loss)
-    # return loss
+def ssim_color_loss(y_true, y_pred):
+    """ SSIM類似度を使用したカラー画像用のロス関数
 
-    # ut = tf.keras.backend.mean(y_true_mean, axis=(1,2))
-    # st = tf.keras.backend.std(y_true_mean, axis=(1,2))
-    # up = tf.keras.backend.mean(y_pred_mean, axis=(1,2))
-    # sp = tf.keras.backend.std(y_true_mean, axis=(1,2))
+    Args:
+        y_true ([type]): [description]
+        y_pred ([type]): [description]
 
-    # k1=0.01
-    # k2=0.03
-
-    # print(ut,st)
-    # ssim = (2.0 * ut * up) +  k1) (2*st*sp)
-
-    loss2 = tf.keras.backend.mean(tf.keras.backend.sum(tf.keras.backend.square(y_true - y_pred / 1000.0)))
-    return loss2
+    Returns:
+        [type]: [description]
+    """
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.cast(y_pred, tf.float32)
+    mse = tf.reduce_mean(tf.square((y_pred - y_true)),axis=[1,2,3])
+    
+    gray_y_true = tf.image.rgb_to_grayscale(y_true)
+    gray_y_pred = tf.image.rgb_to_grayscale(y_pred)
+    loss = 1 - tf.reduce_mean(tf.image.ssim(gray_y_true, gray_y_pred, 1.0)) + (5.0 *mse)
+    if tftk.IS_MIXED_PRECISION():
+        loss = tf.cast(loss, tf.float16)
+    return loss
