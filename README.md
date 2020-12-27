@@ -17,10 +17,6 @@ TFTKはTensorFlowを簡単化するライブラリです。
 * データの拡張を簡単にします。
 * モデルも多数組み合わせられます。単純なCNNモデルから、ResNet/EfficientNetまで。
 
-
-
-
-
 ## インストール
 
 pipコマンドでインストールすることができます。
@@ -97,6 +93,7 @@ https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py
 ### 2.1.データセット
 
 TensorFlow datasetsより、幾つかのデータセットをサポートします。
+get_train_dataset/get_test_datasetを行ってください。
 
 |データセット|クラス|説明|
 |:--|:--|:--|
@@ -109,12 +106,11 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 
 これらのメソッドは tf.data.Dataset#map()やapply()で利用できるように作られています。
 
-
 |データ操作|説明|メソッド|
 |:--|:--|:--|
 |データセットの分割|データセットを指定の比率で分割します|tftk.image.dataset.utility.ImageDatasetUtility#devide_train_validation()|
 |データセットの正規化 | 画素値を0-255から0.0～1.0に|tftk.image.dataset.utility.ImageDatasetUtility#image_reguralization()|
-|ラベルのone-hot化|ラベル値をone-hot形式にします。ラベル3->(0,0,1,0,0)|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
+|ラベルのone-hot化|ラベル値をone-hot形式にします。例：ラベル3->(0,0,1,0,0)|tftk.image.dataset.utility.ImageDatasetUtility#one_hote()|
 
 ### 2.3.データの操作
 
@@ -132,9 +128,9 @@ TensorFlow datasetsより、幾つかのデータセットをサポートしま�
 
 |データ化拡張|説明|リンク|
 |:--|:--|:--|
-|RandAugment|AutoAugument相当の精度向上をするSOTAデータ拡張手法です。| |
-|Mixup|2つの画像を混ぜ合わせる画像拡張です。| |
-|Cutout|画像の一部を切り取るCutout拡張を行います| |
+|tf.image.augument.ImageAugument#randaugment_map()|AutoAugument相当の精度向上をするSOTAデータ拡張手法、RandAugumentです。| |
+|tf.image.augment.ImageAugument#mixup_apply()|2つの画像をMixupする混ぜ合わせる画像拡張です。| |
+|tf.image.augment.ImageAugument#cutout()|画像の一部を切り取るCutout拡張を行います| |
 
 ## 2.5.モデル
 
