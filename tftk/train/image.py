@@ -74,7 +74,7 @@ class ImageTrain():
             print("google drive is not found.")
 
         if exe.is_resumable_training()==True:
-            # print("This is resume training!!")
+            print("This is resume training!!")
             exe.resume_model(model)
             resume_val = exe.resume_values()
             initial_epoch, _, _,_  = resume_val

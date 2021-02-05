@@ -132,7 +132,7 @@ class ImageDatasetUtil():
         Returns:
             [type]: [description]
         """
-        def __dict_to_classification_tuple(data:Dict)->(tf.Tensor,tf.Tensor):
+        def __dict_to_classification_tuple(data:Dict):
             return (data["image"], data["label"])
         return __dict_to_classification_tuple
     

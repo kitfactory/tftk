@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 
-
 """
 from tftk.dataset.image import Mnist
 from tftk.dataset.image import Cifar10
@@ -46,7 +45,7 @@ if __name__ == '__main__':
 
 
     tftk.ENABLE_MIXED_PRECISION()
-    tftk.ENABLE_SUSPEND_RESUME_TRAINING()
+    # tftk.ENABLE_SUSPEND_RESUME_TRAINING()
 
     BATCH_SIZE = 40
 

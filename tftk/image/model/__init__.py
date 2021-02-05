@@ -27,6 +27,9 @@ from . small_resnet_keras_contrib import KerasResNet34
 from . autoencoder import SimpleAutoEncoderModel
 from . autoencoder import SSIMAutoEncoderModel
 
+from . representation import SimpleRepresentationModel
+from . representation import add_projection_layers
+
 __all__ = [
     'AbstractClassificationModel'
     'KerasResNet18',
@@ -45,7 +48,9 @@ __all__ = [
     'EfficientNetB0',
     'SimpleClassificationModel',
     'SimpleAutoEncoderModel',
-    'SSIMAutoEncoderModel'
+    'SSIMAutoEncoderModel',
+    'SimpleRepresentationModel',
+    'add_projection_layers'
 ]
 
 """

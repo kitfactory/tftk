@@ -11,8 +11,8 @@ from tftk import ENABLE_SUSPEND_RESUME_TRAINING, ResumeExecutor
 
 if __name__ == '__main__':
 
-    context = Context.init_context(TRAINING_NAME='mnist')
-    ENABLE_SUSPEND_RESUME_TRAINING()
+    context = Context.init_context(TRAINING_NAME='mnist_y')
+    # ENABLE_SUSPEND_RESUME_TRAINING()
 
     BATCH_SIZE = 500
     CLASS_NUM = 10
