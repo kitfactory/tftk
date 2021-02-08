@@ -8,20 +8,21 @@ import tensorflow_datasets as tfds
 from icrawler.builtin import BingImageCrawler
 
 from tftk.image.dataset import BaseDataset
+from typing import Tuple
 
 class Mnist(BaseDataset):
     @classmethod
-    def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="mnist", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_validation_dataset(cls, **kwargs)->(tf.data.Dataset, int):
+    def get_validation_dataset(cls, **kwargs)->Tuple[tf.data.Dataset, int]:
         return (None, -1)
 
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info =  tfds.load(name="mnist", split="test",with_info=True)
         return ds, info.splits["test"].num_examples
 
@@ -29,16 +30,16 @@ class Mnist(BaseDataset):
 class Cifar10(BaseDataset):
 
     @classmethod
-    def get_train_dataset(cls)->(tf.data.Dataset, int):
+    def get_train_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="cifar10", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_validation_dataset(cls, **kwargs)->(tf.data.Dataset, int):
+    def get_validation_dataset(cls, **kwargs)->Tuple[tf.data.Dataset, int]:
         return (None, -1)
 
     @classmethod
-    def get_test_dataset(cls)->(tf.data.Dataset, int):
+    def get_test_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="cifar10", split="test",with_info=True)
         return ds, info.splits["test"].num_examples
 
@@ -88,7 +89,7 @@ class ImageCrawler():
 class ImageLabelFolderDataset():
 
     @classmethod
-    def get_train_dataset(cls, name="dataset", manual_dir="./", **kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls, name="dataset", manual_dir="./", **kwargs)->Tuple[tf.data.Dataset, int]:
         print(name,manual_dir)
         builder = tfds.image.ImageLabelFolder(name)
         dl_config = tfds.download.DownloadConfig(manual_dir=manual_dir)
@@ -99,7 +100,7 @@ class ImageLabelFolderDataset():
 
 
     @classmethod
-    def get_validation_dataset(cls, name="dataset", dir="./", **kwargs)->(tf.data.Dataset,int):
+    def get_validation_dataset(cls, name="dataset", dir="./", **kwargs)->Tuple[tf.data.Dataset, int]:
         """validation用データセットを取得する。
         
         Arguments:
@@ -116,7 +117,7 @@ class ImageLabelFolderDataset():
         return ds, len
 
     @classmethod
-    def get_test_dataset(cls, name="dataset", dir="./", **kwargs)->(tf.data.Dataset,int):
+    def get_test_dataset(cls, name="dataset", dir="./", **kwargs)->Tuple[tf.data.Dataset, int]:
         """test用データセットを取得する。
         
         Arguments:
@@ -135,48 +136,48 @@ class ImageLabelFolderDataset():
 
 class Place365Small(BaseDataset):
     @classmethod
-    def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="places365_small", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
     
     @classmethod
-    def get_validation_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_validation_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="places365_small", split="validation",with_info=True)
         return ds, info.splits["validation"].num_examples
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="places365_small", split="test",with_info=True)
         return ds, info.splits["test"].num_examples
 
 
 class Food101(BaseDataset):
     @classmethod
-    def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="food101", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_validation_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_validation_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="food101", split="validation",with_info=True)
         return ds, info.splits["validation"].num_examples
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         return (None,-1)
 
 class PatchCamelyon(BaseDataset):
     @classmethod
-    def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="patch_camelyon", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_validation_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_validation_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         return (None,-1)
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="patch_camelyon", split="test",with_info=True)
         return ds, info.splits["test"].num_examples
 
@@ -190,17 +191,17 @@ class ImageNetResized(BaseDataset):
         [type] -- [description]
     """
     @classmethod
-    def get_train_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_train_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="imagenet_resized/64x64", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="imagenet_resized/64x64", split="validation",with_info=True)
         return ds, info.splits["validation"].num_examples
 
     @classmethod
-    def get_test_dataset(cls,**kwargs)->(tf.data.Dataset, int):
+    def get_test_dataset(cls,**kwargs)->Tuple[tf.data.Dataset, int]:
         return (None,-1)
 
 
@@ -208,34 +209,34 @@ class ImageNetResized(BaseDataset):
 
 class ImageNet2012(BaseDataset):
     @classmethod
-    def get_train_dataset(cls)->(tf.data.Dataset, int):
+    def get_train_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="imagenet2012", split="train",with_info=True,data_dir="D:\\imagenet")
         return ds, 1281167
 
     @classmethod
-    def get_test_dataset(cls)->(tf.data.Dataset, int):
+    def get_test_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="imagenet2012", split="ttest",with_info=True,data_dir="D:\\imagenet")
         return ds, info.splits["test"].num_examples
 
 
 class CatsVsDogs(BaseDataset):
     @classmethod
-    def get_train_dataset(cls)->(tf.data.Dataset, int):
+    def get_train_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="cats_vs_dogs", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_test_dataset(cls)->(tf.data.Dataset, int):
+    def get_test_dataset(cls)->Tuple[tf.data.Dataset, int]:
         raise Exception("No test data")
 
 class RockPaperScissors(BaseDataset):
 
     @classmethod
-    def get_train_dataset(cls)->(tf.data.Dataset, int):
+    def get_train_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="rock_paper_scissors", split="train",with_info=True)
         return ds, info.splits["train"].num_examples
 
     @classmethod
-    def get_test_dataset(cls)->(tf.data.Dataset, int):
+    def get_test_dataset(cls)->Tuple[tf.data.Dataset, int]:
         ds, info = tfds.load(name="rock_paper_scissors", split="test",with_info=True)
         return ds, info.splits["test"].num_examples

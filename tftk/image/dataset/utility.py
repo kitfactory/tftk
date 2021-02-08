@@ -2,7 +2,7 @@ import tensorflow as tf
 import cv2
 from PIL import Image
 import numpy as np
-from typing import Dict,List, Callable
+from typing import Dict,List, Callable,Tuple
 
 max_crop_width = 100
 max_crop_height = 100
@@ -31,7 +31,7 @@ class ImageDatasetUtil():
     
 
     @classmethod
-    def devide_train_validation(cls, dataset:tf.data.Dataset, length:int, ratio:float)->((tf.data.Dataset,int),(tf.data.Dataset,int)):
+    def devide_train_validation(cls, dataset:tf.data.Dataset, length:int, ratio:float)->Tuple[Tuple[tf.data.Dataset,int],Tuple[tf.data.Dataset,int]]:
         """学習用と検証用のデータセットに分割する。
         
         Arguments:
@@ -51,11 +51,11 @@ class ImageDatasetUtil():
 
 
     @classmethod
-    def k_fold_cross_validation_dataset(cls, dataset:tf.data.Dataset, length:int, ratio:float)->((tf.data.Dataset,int),(tf.data.Dataset,int)):
+    def k_fold_cross_validation_dataset(cls, dataset:tf.data.Dataset, length:int, ratio:float)->Tuple[Tuple[tf.data.Dataset,int],Tuple[tf.data.Dataset,int]]:
         pass        
 
     @classmethod
-    def count_image_dataset(cls, dataset:tf.data.Dataset)->(int, Dict):
+    def count_image_dataset(cls, dataset:tf.data.Dataset)->Tuple[int, Dict]:
         """データセットのラベルごとの数を数える。
         
         Arguments:
@@ -144,7 +144,7 @@ class ImageDatasetUtil():
         Returns:
             [type]: [description]
         """
-        def dict_to_ae_tuple(data:Dict)->(tf.Tensor,tf.Tensor):
+        def dict_to_ae_tuple(data:Dict)->Tuple[tf.Tensor,tf.Tensor]:
             return (data["image"], data["image"])
         return dict_to_ae_tuple
 

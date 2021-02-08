@@ -1,4 +1,6 @@
 from tftk.image.dataset import Mnist
+from tftk.image.dataset import Food101
+
 from tftk.image.dataset import ImageDatasetUtil
 from tftk.image.model.classification import SimpleClassificationModel
 from tftk.callback import CallbackBuilder
@@ -14,10 +16,16 @@ from tftk import ENABLE_SUSPEND_RESUME_TRAINING, ResumeExecutor
 import tensorflow as tf
 
 
+
+
+
+
+
+
+
 class MovingAverageCallback(tf.keras.callbacks.Callback):
     def __init__(self, model):
         self.model = model
-        self.model_b = model_b
     
     def on_train_begin(self, logs=None):
         print("Starting training")
@@ -60,9 +68,40 @@ def reinforcement(data):
     label = data["label"]
     return ([img,img],[img,img])
 
+    
+
+# supervised
+
+def supervised_dataset(dataset:tf.data.Dataset, max_label:int)->tf.data.Dataset:
+    filtered = dataset.filter(lambda data:data['label'] < max_label)
+
+    def supervised_transform(data):
+        image = data['image']
+        image = tf.cast(image, tf.float32)
+        image = image / 255.0
+        label = data['label']
+        label = tf.one_hot(label, max_label)
+        return image, label
+
+    return filtered.map(supervised_transform, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+
+
+def pretext_dataset(dataset:tf.data.Dataset, start_label:int)->tf.data.Dataset:
+    filtered = dataset.filter(lambda data:data['label'] >= start_label)
+
+    def supervised_transform(data):
+        image = data['image']
+        image = tf.cast(image, tf.float32)
+        image = image / 255.0
+
+
+    def random_transform(image):
+        pass
+
+
 if __name__ == '__main__':
 
-    context = Context.init_context(TRAINING_NAME='mnist')
+    context = Context.init_context(TRAINING_NAME='')
     # ENABLE_SUSPEND_RESUME_TRAINING()
 
     BATCH_SIZE = 500
@@ -71,41 +110,46 @@ if __name__ == '__main__':
     EPOCHS = 2
     SHUFFLE_SIZE = 1000
 
+
+
+
+
+
     # if IS_SUSPEND_RESUME_TRAIN() == True and IS_ON_COLABOLATORY_WITH_GOOGLE_DRIVE()== True:
     
 
-    train, train_len = Mnist.get_train_dataset()
-    validation, validation_len = Mnist.get_test_dataset()
+    # train, train_len = Mnist.get_train_dataset()
+    # validation, validation_len = Mnist.get_test_dataset()
 
-    train = train.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
-    validation = validation.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
+    # train = train.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
+    # validation = validation.map(ImageDatasetUtil.image_reguralization()).map(ImageDatasetUtil.one_hot(CLASS_NUM))
 
-    train = train.map(reinforcement)
+    # train = train.map(reinforcement)
 
-    online_model = SimpleRepresentationModel.get_representation_model(input_shape=(28,28,1))
-    target_model = SimpleRepresentationModel.get_representation_model(input_shape=(28,28,1))
+    # online_model = SimpleRepresentationModel.get_representation_model(input_shape=(28,28,1))
+    # target_model = SimpleRepresentationModel.get_representation_model(input_shape=(28,28,1))
 
-    print(online_model.layers)
-    online_projection_model = add_projection_layers(online_model)
-    target_projection_model = add_projection_layers(target_model)
+    # print(online_model.layers)
+    # online_projection_model = add_projection_layers(online_model)
+    # target_projection_model = add_projection_layers(target_model)
 
-    input_online = online_model.layers[0].input
-    input_target = target_model.layers[0].input
+    # input_online = online_model.layers[0].input
+    # input_target = target_model.layers[0].input
 
-    output_online = online_model.layers[-1].output
-    output_target = target_model.layers[-1].output
+    # output_online = online_model.layers[-1].output
+    # output_target = target_model.layers[-1].output
 
-    mearged_model = tf.keras.Model(inputs=[input_online,input_target], outputs=[output_online,output_target])
-    mearged_model.summary()
+    # mearged_model = tf.keras.Model(inputs=[input_online,input_target], outputs=[output_online,output_target])
+    # mearged_model.summary()
 
-    optimizer = OptimizerBuilder.get_optimizer(name="rmsprop")
-    callbacks = CallbackBuilder.get_callbacks(tensorboard=False, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.25,early_stopping_patience=16)
+    # optimizer = OptimizerBuilder.get_optimizer(name="rmsprop")
+    # callbacks = CallbackBuilder.get_callbacks(tensorboard=False, reduce_lr_on_plateau=True,reduce_patience=5,reduce_factor=0.25,early_stopping_patience=16)
 
-    mearged_model.compile(optimizer=optimizer, loss=custom_loss)
+    # mearged_model.compile(optimizer=optimizer, loss=custom_loss)
 
-    train = train.take(10)
-    y = mearged_model.predict(train)
-    print(y)
+    # train = train.take(10)
+    # y = mearged_model.predict(train)
+    # print(y)
     # optimizer='rmsprop', loss=None, metrics=None, loss_weights=None, weighted_metrics=None, run_eagerly=None, steps_per_execution=None, **kwargs)
 
 
