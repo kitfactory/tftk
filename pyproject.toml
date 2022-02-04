@@ -1,31 +1,30 @@
 [tool.poetry]
 name = "tftk"
-version = "0.1.12"
+version = "0.1.15"
 description = "Machine Learning Toolkit using TensorFlow"
 authors = ["Naruhide KITADA <kitfactory@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6,<4"
-gym = "^0.17.1"
+python = ">=3.7,<4"
 optuna = ">= 1.2"
-pillow = "^7.0.0"
-icrawler = "^0.6.2"
-graphviz = "^0.14"
-pydot-ng = "^2.0.0"
-tensorboard_plugin_profile = "^2.2.0"
+pillow = ">=7.0.0"
+icrawler = ">=0.6.2"
+graphviz = ">=0.14"
+pydot-ng = ">=2.0.0"
+tensorboard_plugin_profile = ">=2.2.0"
 sphinx = "^3.0.3"
 sphinx_ustack_theme = "^1.0.0"
 sphinx_materialdesign_theme = "^0.1.11"
 matplotlib = "^3.2.1"
-opencv-python = "^4.2.0"
 pymongo = "^3.10.1"
 pybullet = "^2.8.2"
-tf-agents = "^0.5.0"
 tensorflow-datasets = "^4"
-tensorflow = "^2.4"
-tensorflow_addons = "^0.12.1"
-tensorflow_metadata = "^0.27.0"
+tensorflow = ">= 2.2"
+tensorflow_addons = ">=0.12.1"
+tensorflow_metadata = ">=0.27.0"
+pyspark = "^3.2.0"
+scikit-learn = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 
